@@ -1,0 +1,145 @@
+*For Today's Summary:*
+	Client will send the following:
+	{	"clientId": "1234567890",
+		"duration": "dailyall"
+		"date": "YYYY-MM-DD"
+	}
+
+	Server should send the following data for that particular date to the client:
+	{	
+		"1234567890": {
+						"steps" : "2345",
+						"distance" : "3.4",
+						"elevation" : "2.1",
+						"active" : "23",
+						"floors" : "1.3",
+						"bp" : "123/78",			
+						"steps" : "123456",	   
+						"pulse" : "98",
+						"date" : "YYYY-MM-DD",
+						"hour" : "3"
+					}
+	}
+
+
+
+
+	
+*For Calories - Daily*
+	Client will send the following:
+	{
+		"clientId": "1234567890",
+		"type": "calorie",
+		"duration": "daily" #hourly
+		"date": "YY-MM-DD"
+	}
+	
+	Server should send the following data to the client:
+	{
+		"1234567890":{
+						"calorie": [hourly calories burned]
+					}
+	}
+	
+
+
+	
+	
+*For Calories - Weekly*
+	Client will send the following:
+	{
+		"clientId": "1234567890",
+		"type": "calorie",
+		"duration": "weekly"
+		"date": "YY-MM-DD"
+	}
+	
+	Server should send the following data to the client:
+	{
+		"1234567890":{
+						"calorie": [daily calories burned]
+					}
+	}
+	
+	
+	
+
+	
+	
+*For Calories - Monthly*
+	Client will send the following:
+	{
+		"clientId": "1234567890",
+		"type": "calorie",
+		"duration": "monthly"
+		"date": "YY-MM-DD"
+	}
+	
+	Server should send the following data to the client:
+	{
+		"1234567890":{
+						"calorie": [weekly calories burned]
+					}
+	}
+	
+	
+	
+	
+	
+*For Calories - Yearly*
+	Client will send the following:
+	{
+		"clientId": "1234567890",
+		"type": "calorie",
+		"duration": "yearly"
+		"date": "YYYY-MM-DD"
+	}
+	
+	Server should send the following data to the client:
+	{
+		"1234567890":{
+						"calorie": [monthly calories burned]
+					}
+	}
+
+				
+				
+
+				
+*For Local Area Summary*
+	Client will send the following:
+		"clientId": "1234567890",
+		"type": "localAreaSummary"
+		"edgeIP": "10.10.10.10"
+		"date": "YYYY-MM-DD"
+        #weekly
+				
+				
+				
+	*Server will send the following to the client:				
+		"1234567890" : {
+						"client_weekly_summary" : {
+													"steps" : "2345",#summation
+													"distance" : "3.4",#summation
+													"elevation" : "2.1",#summation
+													"active" : "23",#summation
+													"floors" : "1.3",#sumation
+													"bp" : "123/78",#average	
+													"steps" : "123456",	#summation
+													"pulse" : "98",#average
+													"date" : "04032017",
+													"ip" : "0.0.0.0"
+												}
+						"localAreaSummary" :	{
+													"steps" : "2345",#summation
+													"distance" : "3.4",#summation
+													"elevation" : "2.1",#summation
+													"active" : "23",#summation
+													"floors" : "1.3",#sumation
+													"bp" : "123/78",#average	
+													"steps" : "123456",	#summation
+													"pulse" : "98",#average
+													"date" : "04032017",
+													"ip" : "0.0.0.0"
+												}
+					}

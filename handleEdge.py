@@ -15,101 +15,107 @@ mysql = MySQL(app)
 db = mysql.connect()
 
 def handleHourly(req):
+    cursor = db.cursor()
     for i in req.keys():
         client = i
-        data = req.get(i)
+        data = req[i]
         date = data.get("date")
-        hour = data.get("hour")
+        hr = data.get("hour")
         dateTime = date + " " + str(hr) + ":00:00"
-        steps = data.get(steps)
+        steps = data.get("steps")
         elevation = data.get("elevation")
         distance = data.get("distance")
         floors = data.get("floors")
         bp = data.get("bp")
         steps = data.get("steps")
         pulse = data.get("pulse")
-        activemins = data.get("activemins")
+        calories = data.get("calories")
+        activemins = data.get("active")
         
-        command = "INSERT INTO hourlysummary (id, dateTime, steps, distance, elevation, calories, floors, pulse, activemins, bp) VALUES (\"" 
-        + client + "\", "
-        + dateTime + ", "
-        + steps + ", "
-        + distance + ", "
-        + elevation + ", "
-        + calories + ", "
-        + floors + ", "
-        + pulse + ", "
-        + activemins + ", "
-        + bp + ")"
+        command = "REPLACE INTO hourlysummary (id, dateTime, steps, distance, elevation, calories, floors, pulse, activemins, bp) VALUES (\"" 
+        command += client + "\", \""
+        command += str(dateTime) + "\", "
+        command += steps + ", "
+        command += distance + ", "
+        command += elevation + ", "
+        command += calories + ", "
+        command += floors + ", "
+        command += pulse + ", "
+        command += activemins + ", "
+        command += bp + ")"
+        #print command
+        #break
         cursor.execute(command)
         db.commit()
         
 def clientSummary(req):
+    cursor = db.cursor()
     for i in req.keys():
         client = i
-        data = req.get(i)
+        data = req[i]
         date = data.get("date")
-        dateTime = date + " " + str(hr) + ":00:00"
-        steps = data.get(steps)
+        steps = data.get("steps")
         elevation = data.get("elevation")
         distance = data.get("distance")
         floors = data.get("floors")
         bp = data.get("bp")
         steps = data.get("steps")
         pulse = data.get("pulse")
-        activemins = data.get("activemins")
+        calories = data.get("calories")
+        activemins = data.get("active")
         
-        command = "INSERT INTO dailysummary (id, date, steps, distance, elevation, calories, floors, pulse, activemins, bp) VALUES (\"" 
-        + client + "\", "
-        + date + ", "
-        + steps + ", "
-        + distance + ", "
-        + elevation + ", "
-        + calories + ", "
-        + floors + ", "
-        + pulse + ", "
-        + activemins + ", "
-        + bp + ")"
+        command = "REPLACE INTO dailysummary (id, date, steps, distance, elevation, calories, floors, pulse, activemins, bp) VALUES (\"" 
+        command += client + "\", "
+        command += "\"" + date + "\", "
+        command += steps + ", "
+        command += distance + ", "
+        command += elevation + ", "
+        command += calories + ", "
+        command += floors + ", "
+        command += pulse + ", "
+        command += activemins + ", "
+        command += bp + ")"
         cursor.execute(command)
         db.commit()  
 
 def localSummary(req):
-    ip = req.get(ip)
-    data = req.get(i)
-    date = data.get("date")
-    time = data.get("hour")
-    steps = data.get(steps)
-    elevation = data.get("elevation")
-    distance = data.get("distance")
-    floors = data.get("floors")
-    bp = data.get("bp")
-    steps = data.get("steps")
-    pulse = data.get("pulse")
-    activemins = data.get("activemins")
+    cursor = db.cursor()
+    ip = req.get("ip")
+    date = req.get("date")
+    steps = req.get("steps")
+    elevation = req.get("elevation")
+    distance = req.get("distance")
+    floors = req.get("floors")
+    bp = req.get("bp")
+    steps = req.get("steps")
+    pulse = req.get("pulse")
+    calories = req.get("calories")
+    activemins = req.get("active")
 
-    command = "INSERT INTO localsummary (ip, date, steps, distance, elevation, calories, floors, pulse, activemins, bp) VALUES (\"" 
-    + ip + "\", "
-    + date + ", "
-    + steps + ", "
-    + distance + ", "
-    + elevation + ", "
-    + calories + ", "
-    + floors + ", "
-    + pulse + ", "
-    + activemins + ", "
-    + bp + ")"
+    command = "REPLACE INTO localsummary (ip, date, steps, distance, elevation, calories, floors, pulse, activemins, bp) VALUES (\"" 
+    command +=  ip + "\", "
+    command += "\"" + date + "\", "
+    command +=  steps + ", "
+    command +=  distance + ", "
+    command +=  elevation + ", "
+    command +=  calories + ", "
+    command +=  floors + ", "
+    command +=  pulse + ", "
+    command +=  activemins + ", "
+    command +=  bp + ")"
     cursor.execute(command)
     db.commit()
 
 @app.route('/pushdata', methods=['GET', 'POST'])
 def pushdata():#from edge server
-    req = request.json #get request from edge server
+    #req = {'hourly': {'1234567890': {'distance': '3.4', 'floors': '1.3', 'steps': '123456', 'calories': '14131', 'hour': '3', 'date': '2017-04-03', 'elevation': '2.1', 'bp': '123/78', 'active': '23', 'pulse': '98'}, '2222222222': {'distance': '3.4', 'floors': '1.3', 'steps': '123456', 'calories': '14131', 'hour': '3', 'date': '2017-04-03', 'elevation': '2.1', 'bp': '123/78', 'active': '23', 'pulse': '98'}}, 'localSummary': {'elevation': '2.1', 'distance': '3.4', 'floors': '1.3', 'steps': '123456', 'calories': '14131', 'date': '2017-04-03', 'ip': '0.0.0.0', 'bp': '123/78', 'active': '23', 'pulse': '98'}, 'clientSummary': {'1234567890': {'distance': '3.4', 'floors': '1.3', 'steps': '123456', 'calories': '14131', 'date': '2017-04-03', 'elevation': '2.1', 'bp': '123/78', 'active': '23', 'pulse': '98'}, '2222222222': {'distance': '3.4', 'floors': '1.3', 'steps': '123456', 'calories': '14131', 'date': '2017-04-03', 'elevation': '2.1', 'bp': '123/78', 'active': '23', 'pulse': '98'}}}
+    req = request.json
     if( "hourly" in req ):
-        handleHourly(req)
+        handleHourly(req["hourly"])
     if( "clientSummary" in req):
-        clientSummary(req)
+        clientSummary(req["clientSummary"])
     if( "localSummary" in req ):
-        localSummary(req)
+        localSummary(req["localSummary"])
         
     #cursor = db.cursor()
     #command = "INSERT INTO hourlydata (id, dateTime, steps, distance, elevation, calories, floors, pulse, activemins, bp) VALUES (\"1\", \""
