@@ -1,8 +1,8 @@
 import webbrowser
 import sys
 import os
+from flask import Flask, jsonify, request
 import requests
-from flask import Flask
 import json
 
 
@@ -54,14 +54,15 @@ def userMenu(clientId):
 #--------------------------------createJSONData---------------------------------
 def createJsonData(graphMenuChoice, durationMenuChoice, clientId):
     if(durationMenuChoice == 0):
-        data = {"clientId":clientId}
+        data = {'clientId':clientId}
     else:
-        data = {"clientId":clientId, "type":graphMenuDict[graphMenuChoice], "duration":durationMenuDict[durationMenuChoice]}
+        data = {'clientId':clientId,'type':graphMenuDict[graphMenuChoice],'duration':durationMenuDict[durationMenuChoice]}
     data = json.dumps(data)
     print data
 
-    #url = 'http://ES_search_demo.com/document/record/_search?pretty=true'
-    #response = requests.post(url, data=data)
+    url = 'http://localhost:5000/post'
+    response = requests.post(url, data=data, headers={"Content-Type":"application/json"})
+    print response
 
 
 #--------------------------------performOperation-------------------------------
