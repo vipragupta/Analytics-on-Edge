@@ -8,7 +8,8 @@ import subprocess
 
 class MyData():
 	def __init__(self):
-		self.clientId = str(randint(0,9)) + str(randint(0,9)) + str(randint(0,9)) + str(randint(0,9))
+		self.clientId = str(randint(0,9)) + str(randint(0,9)) + str(randint(0,9)) + str(randint(0,9)) + str(randint(0,9))+ str(randint(0,9))+ str(randint(0,9))
+						+ str(randint(0,9))+ str(randint(0,9))+ str(randint(0,9))
 		self.lat = getCurrentLat()						
 		self.long = getCurrentLong()
 		self.edgemap = {"8.8.8.8", "www.facebook.com", "www.youtube.com"}
@@ -93,8 +94,8 @@ def getIp(ipMap):
 
 
 if __name__ == '__main__':
-	i = 0
-	me = MyData()
+	i = 
+0	me = MyData()
 	ip = getIp(me.edgemap)
 	print ip
 

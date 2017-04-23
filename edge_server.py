@@ -3,23 +3,23 @@ import socket
 
 class Counters():
 	def __init__(self):
-		self.__master = {}
-		self.__bpSysCounter = 0
-		self.__bpDysCounter = 0
-		self.__stepsCounter = 0
-		self.__pulseCounter = 0
-		self.__currentMinute = 0
-		self.__currentHour = 0
-		self.__currentDate = 0
-		self.__num = 0
+		self.master = {}
+#		self.bpSysCounter = 0
+#		self.bpDysCounter = 0
+#		self.stepsCounter = 0
+#		self.pulseCounter = 0
+#		self.__currentMinute = 0
+#		self.__currentHour = 0
+#		self.__currentDate = 0
+#sss		self.__num = 0
 
 
 	def __resetCounters(self):
-		self.__bpSysCounter = 0
-		self.__bpDysCounter = 0
-		self.__stepsCounter = 0
-		self.__pulseCounter = 0
-		self.__num = 0
+#		self.__bpSysCounter = 0
+#		self.__bpDysCounter = 0
+#		self.__stepsCounter = 0
+#		self.__pulseCounter = 0
+#		self.__num = 0
 
 
 	def printDic(self):
@@ -53,14 +53,82 @@ class Counters():
 		print self.__master[date]
 
 
-	def incrementCounters(self, bpSys, bpDys, steps, pulse, clientDT):
-		#2014-09-26 16:34:40.278298
+
+	def addDataToMap(self, dataMap):
+		
 		datetm = self.__convertStrToDate(clientDT)
 		date = datetm.date()
 
-		#print self.__currentDate, date, self.__currentHour, datetm.hour, self.__currentMinute, datetm.minute
-		#print self.__currentDate == date, self.__currentHour == datetm.hour, self.__currentMinute == datetm.minute
+		newData = dataMap["data"]
+		newTime = dataMap["time"]
+		clientData = self.master[dataMap["clientId"][date][datetm.hour]]
 
+		steps = int(clientData["steps"]) + int(newData["steps"])
+		distance = int(clientData["distance"]) + int(newData["distance"])
+		elevation = int(clientData["elevation"]) + int(newData["elevation"])
+		calories = int(clientData["calories"]) + int(newData["calories"])
+		floors = int(clientData["floors"])+ int(newData["floors"])
+
+		pulse = self.__getAveragePulse(int(clientData["pulse"]) + int(newData["pulse"]), int(clientData["num"]))
+		bp = self.__getBp(int(clientData["bp"]), int(newData["bp"]), int(newData["num"]))
+
+		clientData["steps"] = steps
+		clientData["distance"] = distance
+		clientData["elevation"] = elevation
+		clientData["calories"] = calories
+		clientData["floors"] = floors
+		clientData["pulse"] = pulse
+		clientData["bp"] = bp
+		clientData["num"] = str(int(clientData["bp"]) + 1)
+
+		self.master[dataMap["clientId"]][date][datetm.hour] = clientData
+
+
+	def addNewClientToMap(self, dataMap):
+		datetm = self.__convertStrToDate(clientDT)
+		date = datetm.date()
+
+		newData = dataMap["data"]
+		newTime = dataMap["time"]
+		#clientData = self.master[dataMap["clientId"][date][datetm.hour]]
+
+		steps = int(newData["steps"])
+		distance = int(newData["distance"])
+		elevation = int(newData["elevation"])
+		calories =int(newData["calories"])
+		floors = int(newData["floors"])
+
+		pulse = int(newData["pulse"])
+		bp = newData["bp"]
+
+
+		clientData["steps"] = steps
+		clientData["distance"] = distance
+		clientData["elevation"] = elevation
+		clientData["calories"] = calories
+		clientData["floors"] = floors
+		clientData["pulse"] = pulse
+		clientData["bp"] = bp
+		clientData["num"] = 1
+
+		self.master[dataMap["clientId"]][date][datetm.hour] = clientData
+
+
+	def incrementCounters(self, dataMap):
+		#2014-09-26 16:34:40.278298
+		
+		datetm = self.__convertStrToDate(clientDT)
+		date = datetm.date()
+		if dataMap["clientId"][date][datetm.hour] in self.master:
+			self.addDataToMap(dataMap)
+		elif dataMap["clientId"][date] in self.master:
+			#TODO
+		elif dataMap["clientId"] in self.master:
+			#TODO
+		else:
+			self.addNewClientToMap(dataMap)
+
+		'''
 		if self.__currentDate == 0:
 			self.__setClassDateTime(clientDT)
 		else :
@@ -73,10 +141,12 @@ class Counters():
 		self.__bpDysCounter += int(bpDys)
 		self.__stepsCounter += int(steps)
 		self.__pulseCounter += int(pulse)
-		self.__num += 1 
+		self.__num += 1
+		'''
 		return "Done"
 
 
+'''
 	def __setClassDateTime(self, clientDT):
 		#print "Inside __setClassDateTime"
 		datetm = self.__convertStrToDate(clientDT)
@@ -93,6 +163,7 @@ class Counters():
 
 		elif self.__currentMinute < datetm.minute:
 			self.__currentMinute = datetm.minute
+'''
 
 
 	def __convertStrToDate(self, date):
@@ -100,47 +171,54 @@ class Counters():
 
 
 	def __getAveragePulse(self):
-		if self.__num != 0:
-			return self.__pulseCounter/self.__num
-		return self.__pulseCounter
+		return pulse/num
 
-	def __getBp(self):
-		if self.__num != 0:
-			sys = self.__bpSysCounter/self.__num
-			dys = self.__bpDysCounter/self.__num
-		else:
-			sys = self.__bpSysCounter
-			dys = self.__bpDysCounter
+
+	def __getBp(self, currentBp, newBp, num):
+
+		currentsys = currentBp.split('/')[0]
+        currestdys = currentBp.split('/')[1]
+
+        newsys = newBp.split('/')[0]
+        newdys = newBp.split('/')[1]
+
+		sys = (currentsys + newsys)/num
+		dys = (currentdys + newdys)/num
+
 		return str(sys) + "/" + str(dys)
 
 
 
 def extractData(str):
-	return str.split('#')
+	map = {}
+
+	dataMap = {'distance': 0, 'elevation': 0, 'calories': 18.556499481201172, 'pulse': '135', 'floors': 0, 'bp': '130/54', 'steps': 0}
+	map["data"] = dataMap
+	map["clientId"] = "784512"
+	map["time"]	= str(now)
+
+	return map 			#TODO
 
 
 if __name__ == '__main__':
 
     count = Counters()
-    port = raw_input("Enter a port to start on: ")
+    #port = raw_input("Enter a port to start on: ")
 
-    try: 
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.bind(("127.0.0.1", int(port)))
-
+    try:
         while True:
-            print ("waiting for request ...")
-            request, client  = sock.recvfrom(10240)
-            print "request:", request
-            data = extractData(request)
+        #    print ("waiting for request ...")
+        #    request, client  = sock.recvfrom(10240)
+        #    print "request:", request
+            dataMap = extractData(request)
 
-            clientDT = data[0]
-            steps = data[2]
-            pulse = data[1]
-            bpsys = data[3].split('/')[0]
-            bpdys = data[3].split('/')[1]
+        #    clientDT = data[0]
+        #    steps = data[2]
+        #    pulse = data[1]
+        #    bpsys = data[3].split('/')[0]
+        #    bpdys = data[3].split('/')[1]
 
-            sendMessage = count.incrementCounters(bpsys, bpdys, steps, pulse, clientDT) # where all the operations happen
+            sendMessage = count.incrementCounters(dataMap) 								# where all the operations happen
             if sendMessage == None:
                 sendMessage = ""
 
@@ -164,57 +242,29 @@ if __name__ == '__main__':
 '''
 {	"userId" : {
 		"04032017":{
-					"0000" :{
-							"00" : {
+					"0" :{
 								"bp" : 123/78,			//average
 								"steps" : 123456,	//total
 								"pulse" : 98		//average
 								}, 
-							"01" : {
-								"bp" : 123,			//average
-								"steps" : 123456,	//total
-								"pulse" : 98		//average
-								} 
-							} , 
-					"0100" : {
-							"00" : {
-								"bp" : 123,			//average
-								"steps" : 123456,	//total
-								"pulse" : 98		//average
-								}, 
-							"01" : {
+					"1" : {
 								"bp" : 123,			//average
 								"steps" : 123456,	//total
 								"pulse" : 98		//average
 								}
-						}
 					},
 		"04042017":{
-					"0000" :{
-							"00" : {
-								"bp" : 123,			//average
+					"0" :{
+								"bp" : 123/78,			//average
 								"steps" : 123456,	//total
 								"pulse" : 98		//average
 								}, 
-							"01" : {
-								"bp" : 123,			//average
-								"steps" : 123456,	//total
-								"pulse" : 98		//average
-								} 
-							} , 
-					"0100" : {
-							"00" : {
-								"bp" : 123,			//average
-								"steps" : 123456,	//total
-								"pulse" : 98		//average
-								}, 
-							"01" : {
+					"1" : {
 								"bp" : 123,			//average
 								"steps" : 123456,	//total
 								"pulse" : 98		//average
 								}
-						}
-					}
+					},
 	}
 }
 '''
