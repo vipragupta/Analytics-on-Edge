@@ -7,6 +7,7 @@ from random import randint
 class Edge():
 
 	def __init__(self):
+		self.ip = "8.8.8.8"
 		self.master        = {}
 		self.localSummary  = {}
 		self.clientSummary = {}
@@ -53,12 +54,12 @@ class Edge():
 		map = self.__processData(self.localSummary, newData["data"])
 		num = int(map["num"])
 
-		self.localSummary["steps"]     = map["steps"]     / num
-		self.localSummary["distance"]  = map["distance"]  / num
-		self.localSummary["elevation"] = map["elevation"] / num
-		self.localSummary["calories"]  = map["calories"]  / num
-		self.localSummary["floors"]    = map["floors"]    / num
-		self.localSummary["active"]    = map["active"]    / num
+		self.localSummary["steps"]     = str(int(map["steps"])       / 2)
+		self.localSummary["distance"]  = str(float(map["distance"])  / 2)
+		self.localSummary["elevation"] = str(float(map["elevation"]) / 2)
+		self.localSummary["calories"]  = str(float(map["calories"])  / 2)
+		self.localSummary["floors"]    = str(float(map["floors"])    / 2)
+		self.localSummary["active"]    = str(float(map["active"])    / 2)
 		self.localSummary["pulse"]     = map["pulse"]
 		self.localSummary["bp"]        = map["bp"]
 		self.localSummary["num"]       = map["num"]
@@ -73,16 +74,16 @@ class Edge():
 		else:
 			newData["active"] = "0"
 
-		map["steps"]     = (0 if (len(oldDataMap) == 0) else int(oldDataMap["steps"])) + int(newData["steps"])
-		map["distance"]  = (0 if (len(oldDataMap) == 0) else float(oldDataMap["distance"]))  + float(newData["distance"])
-		map["elevation"] = (0 if (len(oldDataMap) == 0) else float(oldDataMap["elevation"])) + float(newData["elevation"])
-		map["calories"]  = (0 if (len(oldDataMap) == 0) else float(oldDataMap["calories"]))  + float(newData["calories"])
-		map["floors"]    = (0 if (len(oldDataMap) == 0) else float(oldDataMap["floors"]))    + float(newData["floors"])
+		map["steps"]     = ("0" if (len(oldDataMap) == 0) else str(int(oldDataMap["steps"]) + int(newData["steps"])))
+		map["distance"]  = ("0" if (len(oldDataMap) == 0) else str(float(oldDataMap["distance"])  + float(newData["distance"])))
+		map["elevation"] = ("0" if (len(oldDataMap) == 0) else str(float(oldDataMap["elevation"]) + float(newData["elevation"])))
+		map["calories"]  = ("0" if (len(oldDataMap) == 0) else str(float(oldDataMap["calories"])  + float(newData["calories"])))
+		map["floors"]    = ("0" if (len(oldDataMap) == 0) else str(float(oldDataMap["floors"])    + float(newData["floors"])))
 		
-		map["active"]= (0 if (len(oldDataMap) == 0) else int(oldDataMap["active"])) + int(newData["active"])
+		map["active"]= ("0" if (len(oldDataMap) == 0) else str(float(oldDataMap["active"]) + float(newData["active"])))
 
-		map["pulse"] = self.__getAveragePulse((0 if (len(oldDataMap) == 0) else int(oldDataMap["pulse"])) + int(newData["pulse"]), num)
-		map["bp"]    = self.__getBp(("0" if (len(oldDataMap) == 0) else oldDataMap["bp"]), newData["bp"], num)
+		map["pulse"] = self.__getAveragePulse((0 if (len(oldDataMap) == 0) else int(oldDataMap["pulse"])) + int(newData["pulse"]), 2)
+		map["bp"]    = self.__getBp(("0" if (len(oldDataMap) == 0) else oldDataMap["bp"]), newData["bp"], 2)
 		map["num"] = str(num)
 		return map
 
@@ -156,7 +157,7 @@ class Edge():
 
 
 	def __getAveragePulse(self, pulse, num):
-		return pulse/num
+		return str(pulse/num)
 
 
 	def __getBp(self, currentBp, newBp, num):
@@ -175,6 +176,39 @@ class Edge():
 		self.__processLocalSummary(dataMap)
 
 
+	def sendToCloud(self):
+		finalList = {}
+		
+		client = {}
+		now = datetime.now()
+		datetm = datetime.strptime(str(now), "%Y-%m-%d %H:%M:%S.%f")
+		date = self.getDate(datetm)
+		
+		if datetm.minute == 00:
+			hour = str(int(datetm.hour) -1)
+		else:
+			hour = str(datetm.hour)
+
+		finalList["clientSummary"] = self.clientSummary
+		finalList["localSummary"] = self.localSummary
+		
+		for clientId in self.master:
+			clientMap = {}
+			if date in self.master[clientId]:
+				dateMap = self.master[clientId][date]
+				if hour in dateMap:
+					clientMap = dateMap[hour]
+					clientMap["hour"] = hour
+					clientMap["date"] = date
+			if len(clientMap) > 0:
+				client[clientId] = clientMap
+
+		finalList["hourly"] = client
+		print finalList
+		return finalList
+
+
+
 def extractData():
 	map = {}
 	clientId = ["8745274174", "8674587532", "7946547861"]
@@ -187,6 +221,19 @@ def extractData():
 	map["time"]	= str(now)
 
 	return map 			#TODO
+
+
+def sendDataToCloud():
+	return True
+	now = datetime.now()
+	datetm = datetime.strptime(str(now), "%Y-%m-%d %H:%M:%S.%f")
+	
+	if datetm.minute == 00 or datetm.minute == 30:		#Reset all data at 00:05
+		return True
+	else:
+		return False
+
+
 
 
 if __name__ == '__main__':
@@ -203,6 +250,8 @@ if __name__ == '__main__':
 
         #print("sendMessage: ", sendMessage)
         edge.printDic()
+
+        
         #edge.checkResetData()
         #send = sock.sendto(sendMessage, client)
         
@@ -210,6 +259,8 @@ if __name__ == '__main__':
         print
         i +=1
 
+    if sendDataToCloud():
+        edge.sendToCloud()
     #except error, msg:
     #    print ("Error during sending message.")
     #    print ("ERROR CODE: ", msg[0])
