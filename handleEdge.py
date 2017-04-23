@@ -49,7 +49,6 @@ def clientSummary(req):
         client = i
         data = req.get(i)
         date = data.get("date")
-        hr = data.get("hour")
         dateTime = date + " " + str(hr) + ":00:00"
         steps = data.get(steps)
         elevation = data.get("elevation")
@@ -60,9 +59,9 @@ def clientSummary(req):
         pulse = data.get("pulse")
         activemins = data.get("activemins")
         
-        command = "INSERT INTO dailysummary (id, dateTime, steps, distance, elevation, calories, floors, pulse, activemins, bp) VALUES (\"" 
+        command = "INSERT INTO dailysummary (id, date, steps, distance, elevation, calories, floors, pulse, activemins, bp) VALUES (\"" 
         + client + "\", "
-        + dateTime + ", "
+        + date + ", "
         + steps + ", "
         + distance + ", "
         + elevation + ", "
