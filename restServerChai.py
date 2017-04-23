@@ -14,7 +14,7 @@ def mypost():
             print "Request: " + str(request)
             print request.json
 
-            response = {'StatusCode':'200','Message':'Success',"steps" :"100","distance" :"3.4","elevation":"2.1","active":"23","floors":"1.3","bp":"123/78","steps":"123456","pulse":"98","date":"2017-04-23","hour":"3"}
+            response = {'StatusCode':'200','Message':'Success',"steps" :"100","distance" :"3.4","elevation":"2.1","active":"23","floors":"1.3","bp":"123/78","steps":"123","pulse":"98","date":"2017-04-23","hour":"3"}
             response = json.dumps(response)
             return response
 
