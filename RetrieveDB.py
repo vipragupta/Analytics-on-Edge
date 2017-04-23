@@ -5,14 +5,18 @@ def dailyAll(req, db):
     date = req["date"]
     cursor = db.cursor()
     #select * from hourlysummary where id=2222222222 AND DATE(dateTime)="2017-04-03";
-    command = "select * from hourlysummary where id=" + clientId + " AND DATE(dateTime)=\"" + date + "\";"
+    command = "select * from dailysummary where id=" + clientId + " AND DATE=\"" + date + "\";"
     print "command = " + str(command) + "\n"
     cursor.execute(command)
-    row = cursor.fetchone()
-    while row is not None:
-        print(row)
+    ret = cursor.fetchone()
+    '''
+    for key in row:
+        print type(row)
+        print row
         row = cursor.fetchone()
-    return 1
+    '''
+    ret["date"] = ret["date"].__str__()
+    return ret
     
 def daily(req, db):
     return 1

@@ -47,10 +47,13 @@ def getreport():#from client
     duration = req["duration"]
     print "duration = " + str(duration) + "\n"
     if(duration == "dailyall"):
-        dailyAll(req, db)
-    '''
+        ret = dailyAll(req, db)
+        return json.dumps(ret)
+    
     elif(duration == "daily"):
-        #do something
+        ret = daily(req, db)
+        return json.dumps(ret)
+    '''
     elif(duration == "weekly"):
         #do something
     elif(duration == "monthly"):
