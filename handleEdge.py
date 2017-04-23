@@ -4,6 +4,7 @@ import datetime
 from ReplaceDB import handleHourly, clientSummary, localSummary
 from RetrieveDB import dailyAll, daily, weekly, monthly, yearly, localAreaSummary
 from pymysql.cursors import DictCursor
+import json 
 
 mysql = MySQL()
 app = Flask(__name__)
@@ -37,8 +38,9 @@ def getreport():#from client
     req = request.json
     req = {	
             "clientId": "2222222222",
-	    "duration": "dailyall",
-	    "date": "2017-04-03"
+	    "duration": "daily",
+	    "date": "2017-04-03",
+            "type" : "calories"
         }
     if "duration" not in req:
         print "duration not in req"

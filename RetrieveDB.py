@@ -1,12 +1,11 @@
 def dailyAll(req, db):
     duration = "dailyall"
-    print "duration = " + str(duration) + "\n"
     clientId = req["clientId"]
     date = req["date"]
     cursor = db.cursor()
     #select * from hourlysummary where id=2222222222 AND DATE(dateTime)="2017-04-03";
     command = "select * from dailysummary where id=" + clientId + " AND DATE=\"" + date + "\";"
-    print "command = " + str(command) + "\n"
+    #print "command = " + str(command) + "\n"
     cursor.execute(command)
     ret = cursor.fetchone()
     '''
@@ -19,7 +18,24 @@ def dailyAll(req, db):
     return ret
     
 def daily(req, db):
-    return 1
+    duration = "daily"
+    clientId = req["clientId"]
+    date = req["date"]
+    item = req["type"]
+    cursor = db.cursor()
+    command = "select " + item + " , HOUR(dateTime)  from hourlysummary where id=" + clientId + " AND DATE(dateTime)=\"" + date + "\";"
+    #print "\ncommand = " + str(command) + "\n"
+    cursor.execute(command)
+    ret = {}
+    row = cursor.fetchone()
+    val = []
+    while row is not None:
+        temp = {}
+        temp[ row["HOUR(dateTime)"] ] = row[item]
+        val.append( temp )
+        row = cursor.fetchone()
+    ret[item] = val
+    return ret
 
 def weekly(req, db):
     return 1
