@@ -162,58 +162,59 @@ if __name__ == '__main__':
         print ("closing socket")
         sock.close()
 '''
-{
-	"04032017":{
-				"0000" :{
-						"00" : {
-							"bp" : 123/78,			//average
-							"steps" : 123456,	//total
-							"pulse" : 98		//average
-							}, 
-						"01" : {
-							"bp" : 123,			//average
-							"steps" : 123456,	//total
-							"pulse" : 98		//average
-							} 
-						} , 
-				"0100" : {
-						"00" : {
-							"bp" : 123,			//average
-							"steps" : 123456,	//total
-							"pulse" : 98		//average
-							}, 
-						"01" : {
-							"bp" : 123,			//average
-							"steps" : 123456,	//total
-							"pulse" : 98		//average
-							}
+{	"userId" : {
+		"04032017":{
+					"0000" :{
+							"00" : {
+								"bp" : 123/78,			//average
+								"steps" : 123456,	//total
+								"pulse" : 98		//average
+								}, 
+							"01" : {
+								"bp" : 123,			//average
+								"steps" : 123456,	//total
+								"pulse" : 98		//average
+								} 
+							} , 
+					"0100" : {
+							"00" : {
+								"bp" : 123,			//average
+								"steps" : 123456,	//total
+								"pulse" : 98		//average
+								}, 
+							"01" : {
+								"bp" : 123,			//average
+								"steps" : 123456,	//total
+								"pulse" : 98		//average
+								}
+						}
+					},
+		"04042017":{
+					"0000" :{
+							"00" : {
+								"bp" : 123,			//average
+								"steps" : 123456,	//total
+								"pulse" : 98		//average
+								}, 
+							"01" : {
+								"bp" : 123,			//average
+								"steps" : 123456,	//total
+								"pulse" : 98		//average
+								} 
+							} , 
+					"0100" : {
+							"00" : {
+								"bp" : 123,			//average
+								"steps" : 123456,	//total
+								"pulse" : 98		//average
+								}, 
+							"01" : {
+								"bp" : 123,			//average
+								"steps" : 123456,	//total
+								"pulse" : 98		//average
+								}
+						}
 					}
-				},
-	"04042017":{
-				"0000" :{
-						"00" : {
-							"bp" : 123,			//average
-							"steps" : 123456,	//total
-							"pulse" : 98		//average
-							}, 
-						"01" : {
-							"bp" : 123,			//average
-							"steps" : 123456,	//total
-							"pulse" : 98		//average
-							} 
-						} , 
-				"0100" : {
-						"00" : {
-							"bp" : 123,			//average
-							"steps" : 123456,	//total
-							"pulse" : 98		//average
-							}, 
-						"01" : {
-							"bp" : 123,			//average
-							"steps" : 123456,	//total
-							"pulse" : 98		//average
-							}
-					}
-				}
+	}
 }
 '''
