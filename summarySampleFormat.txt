@@ -1,0 +1,167 @@
+*For Today's Summary:*
+	Client will send the following:
+	{	"clientId": "1234567890",
+		"type": "dailyAll"
+		"date": "YYYY-MM-DD"
+	}
+
+	Server should send the following data for that particular date to the client:
+	{	
+		"1234567890": {
+						"steps" : "2345",
+						"distance" : "3.4",
+						"elevation" : "2.1",
+						"active" : "23",
+						"floors" : "1.3",
+						"bp" : "123/78",			
+						"steps" : "123456",	   
+						"pulse" : "98",
+						"date" : "YYYY-MM-DD",
+						"hour" : "3"
+					}
+	}
+
+
+
+
+	
+*For Calories - Daily*
+	Client will send the following:
+	{
+		"clientId": "1234567890",
+		"type": "calorie",
+		"duration": "daily"
+		"date": "YY-MM-DD"
+	}
+	
+	Server should send the following data to the client:
+	{
+		"1234567890":{
+						"calorie": total_calories_burned_in_a_day
+					}
+	}
+	
+
+
+	
+	
+*For Calories - Weekly*
+	Client will send the following:
+	{
+		"clientId": "1234567890",
+		"type": "calorie",
+		"duration": "weekly"
+		"date": "YY-MM-DD"
+	}
+	
+	Server should send the following data to the client:
+	{
+		"1234567890":{
+						"2014-01-01": total_calories_burned_in_week1
+						"2014-02-08": total_calories_burned_in_week2
+						"2014-03-15": total_calories_burned_in_week3
+						"2014-04-22": total_calories_burned_in_week4
+						"2014-04-29": total_calories_burned_in_week5
+					}
+	}
+	
+	
+	
+
+	
+	
+*For Calories - Monthly*
+	Client will send the following:
+	{
+		"clientId": "1234567890",
+		"type": "calorie",
+		"duration": "monthly"
+		"date": "YY-MM-DD"
+	}
+	
+	Server should send the following data to the client:
+	{
+		"1234567890":{
+						"2014-01-30": total_calories_burned_in_January
+						"2014-02-28": total_calories_burned_in_February
+						"2014-03-30": total_calories_burned_in_March
+						"2014-04-30": total_calories_burned_in_April
+						"2014-05-30": total_calories_burned_in_May
+						"2014-06-30": total_calories_burned_in_June
+						"2014-07-30": total_calories_burned_in_July
+						"2014-08-30": total_calories_burned_in_August
+						"2014-09-30": total_calories_burned_in_September
+						"2014-10-30": total_calories_burned_in_October
+						"2014-11-30": total_calories_burned_in_November
+						"2014-12-30": total_calories_burned_in_December
+					}
+	}
+	
+	
+	
+	
+	
+*For Calories - Yearly*
+	Client will send the following:
+	{
+		"clientId": "1234567890",
+		"type": "calorie",
+		"duration": "yearly"
+		"date": "YY-MM-DD"
+	}
+	
+	Server should send the following data to the client:
+	{
+		"1234567890":{
+						"2010": total_calories_burned_in_2010
+						"2011": total_calories_burned_in_2011
+						"2012": total_calories_burned_in_2012
+						"2013": total_calories_burned_in_2013
+						"2014": total_calories_burned_in_2014
+						"2015": total_calories_burned_in_2015
+						"2016": total_calories_burned_in_2016
+						"2017": total_calories_burned_in_2017
+					}
+	}
+
+				
+				
+
+				
+*For Local Area Summary*
+	Client will send the following:
+		"clientId": "1234567890",
+		"type": "localAreaSummary"
+		"edgeIP": "10.10.10.10"
+		"date": "YYYY-MM-DD"
+				
+				
+				
+				
+	*Server will send the following to the client:				
+		"1234567890" : {
+						"client_weekly_summary" : {
+													"steps" : "2345",
+													"distance" : "3.4",
+													"elevation" : "2.1",
+													"active" : "23",
+													"floors" : "1.3",
+													"bp" : "123/78",			
+													"steps" : "123456",	   
+													"pulse" : "98",
+													"date" : "04032017",
+													"ip" : "0.0.0.0"
+												}
+						"localAreaSummary" :	{
+													"steps" : "2345",
+													"distance" : "3.4",
+													"elevation" : "2.1",
+													"active" : "23",
+													"floors" : "1.3",
+													"bp" : "123/78",			
+													"steps" : "123456",	   
+													"pulse" : "98",
+													"date" : "04032017",
+													"ip" : "0.0.0.0"
+												}
+					}
