@@ -26,144 +26,82 @@ class Counters():
 		print self.__master
 
 
+	def processData(self, oldDataMap, newData):
+		map = {}
+		map["steps"] = ((len(oldDataMap) == 0) ? 0 :int(oldDataMap["steps"])) + int(newData["steps"])
+		map["distance"] = ((len(oldDataMap) == 0) ? 0 :int(oldDataMap["distance"])) + int(newData["distance"])
+		map["elevation"] = ((len(oldDataMap) == 0) ? 0 :int(oldDataMap["elevation"])) + int(newData["elevation"])
+		map["calories"] = ((len(oldDataMap) == 0) ? 0 :int(oldDataMap["calories"])) + int(newData["calories"])
+		map["floors"] = ((len(oldDataMap) == 0) ? 0 :int(oldDataMap["floors"]))+ int(newData["floors"])
 
-	def __pushData(self, date, hour, minute):
-		#print "INSIDE __PUSH DATA"
-		print "date: ", date
-		dic = {}
-		dic["bp"] = self.__getBp()
-		dic["steps"] = self.__stepsCounter
-		dic["pulse"] = self.__getAveragePulse()
+		map["pulse"] = self.__getAveragePulse(((len(oldDataMap) == 0) ? 0 :int(oldDataMap["pulse"])) + int(newData["pulse"]), int(oldDataMap["num"]))
+		map["bp"] = self.__getBp(((len(oldDataMap) == 0) ? 0 : int(oldDataMap["bp"])), int(newData["bp"]), ((len(oldDataMap) == 0) ? 1 : int(oldDataMap["num"])))
 
-		if date in self.__master:
-			timeDict = self.__master[date]
-			if hour in timeDict:
-				minuteDict = timeDict[hour]
-			else:
-				minuteDict = {}
-		else:
-			timeDict = {}
-			minuteDict = {}
-		
-		minuteDict[minute] = dic
-		timeDict[hour] = minuteDict
-		
-		self.__master[date] = timeDict
-		print "timeDict: ", timeDict
-		print self.__master[date]
+		return map
 
 
 
-	def addDataToMap(self, dataMap):
-		
-		datetm = self.__convertStrToDate(clientDT)
-		date = datetm.date()
+	# Add data when client's that hour data is present also.
+	def addDataToExisitngHour(self, dataMap, datetm):
 
-		newData = dataMap["data"]
-		newTime = dataMap["time"]
-		clientData = self.master[dataMap["clientId"][date][datetm.hour]]
-
-		steps = int(clientData["steps"]) + int(newData["steps"])
-		distance = int(clientData["distance"]) + int(newData["distance"])
-		elevation = int(clientData["elevation"]) + int(newData["elevation"])
-		calories = int(clientData["calories"]) + int(newData["calories"])
-		floors = int(clientData["floors"])+ int(newData["floors"])
-
-		pulse = self.__getAveragePulse(int(clientData["pulse"]) + int(newData["pulse"]), int(clientData["num"]))
-		bp = self.__getBp(int(clientData["bp"]), int(newData["bp"]), int(newData["num"]))
-
-		clientData["steps"] = steps
-		clientData["distance"] = distance
-		clientData["elevation"] = elevation
-		clientData["calories"] = calories
-		clientData["floors"] = floors
-		clientData["pulse"] = pulse
-		clientData["bp"] = bp
-		clientData["num"] = str(int(clientData["bp"]) + 1)
-
+		map = processData(self.master[dataMap["clientId"][datetm.date()][datetm.hour]], dataMap)
+		clientData = map
+		clientData["num"] = str(int(clientData["num"]) + 1)
 		self.master[dataMap["clientId"]][date][datetm.hour] = clientData
 
 
-	def addNewClientToMap(self, dataMap):
-		datetm = self.__convertStrToDate(clientDT)
-		date = datetm.date()
 
-		newData = dataMap["data"]
-		newTime = dataMap["time"]
-		#clientData = self.master[dataMap["clientId"][date][datetm.hour]]
+	# Add data when client Data is present on edge for the given date, but it doesn't contain that hour data
+	def addDataToExisitingDate(self, dataMap, datatm):
 
-		steps = int(newData["steps"])
-		distance = int(newData["distance"])
-		elevation = int(newData["elevation"])
-		calories =int(newData["calories"])
-		floors = int(newData["floors"])
+		clientData = processData({}, dataMap)
+		clientData["num"] = str(int(clientData["num"]) + 1)
 
-		pulse = int(newData["pulse"])
-		bp = newData["bp"]
+		map1 = {datetm.hour: clientData}
+		self.master[dataMap["clientId"]][datetm.date()] = map1
 
 
-		clientData["steps"] = steps
-		clientData["distance"] = distance
-		clientData["elevation"] = elevation
-		clientData["calories"] = calories
-		clientData["floors"] = floors
-		clientData["pulse"] = pulse
-		clientData["bp"] = bp
-		clientData["num"] = 1
 
-		self.master[dataMap["clientId"]][date][datetm.hour] = clientData
+	# Add data when client Data is present on edge for the given date, but it doesn't contain that hour data
+	def addDataToExisitingClient(self, dataMap, datatm):
+
+		clientData = processData({}, dataMap)
+		clientData["num"] = str(int(clientData["num"]) + 1)
+
+		map1 = {datetm.hour: clientData}
+		map2 = {datetm.date(): map1}
+		self.master[dataMap["clientId"]] = map2
+
+
+
+	# Add data when client Data is not present also.
+	def addData(self, dataMap, datatm):
+
+		clientData = processData({}, dataMap)
+		clientData["num"] = str(int(clientData["num"]) + 1)
+		map1 = {datetm.hour: clientData}
+		map2 = {datetm.date(): map1}
+
+		self.master[dataMap["clientId"]] = map2
+
 
 
 	def incrementCounters(self, dataMap):
-		#2014-09-26 16:34:40.278298
 		
-		datetm = self.__convertStrToDate(clientDT)
+		datetm = self.__convertStrToDate(dataMap["time"])
 		date = datetm.date()
-		if dataMap["clientId"][date][datetm.hour] in self.master:
-			self.addDataToMap(dataMap)
-		elif dataMap["clientId"][date] in self.master:
-			#TODO
-		elif dataMap["clientId"] in self.master:
-			#TODO
-		else:
-			self.addNewClientToMap(dataMap)
 
-		'''
-		if self.__currentDate == 0:
-			self.__setClassDateTime(clientDT)
-		else :
-			if (self.__currentDate != date or self.__currentHour != datetm.hour or self.__currentMinute != datetm.minute):
-				self.__pushData(str(self.__currentDate), self.__currentHour, self.__currentMinute)
-				self.__resetCounters()
-				self.__setClassDateTime(clientDT)
-		print self.__currentDate, date, self.__currentHour, datetm.hour, self.__currentMinute, datetm.minute
-		self.__bpSysCounter += int(bpSys)
-		self.__bpDysCounter += int(bpDys)
-		self.__stepsCounter += int(steps)
-		self.__pulseCounter += int(pulse)
-		self.__num += 1
-		'''
+		if dataMap["clientId"][date][datetm.hour] in self.master:
+			self.addDataToMap(dataMap, datetm)
+		elif dataMap["clientId"][date] in self.master:
+			self.addDataToExisitingDate(dataMap, datetm)
+		elif dataMap["clientId"] in self.master:
+			addDataToExisitingClient(dataMap, datetm)
+		else:
+			self.addData(dataMap, datetm)
+
 		return "Done"
 
-
-'''
-	def __setClassDateTime(self, clientDT):
-		#print "Inside __setClassDateTime"
-		datetm = self.__convertStrToDate(clientDT)
-		date = datetm.date()
-		
-		if self.__currentDate != date: 
-			self.__currentDate = date
-			self.__currentHour = datetm.hour
-			self.__currentMinute = datetm.minute
-
-		elif self.__currentHour != datetm.hour:
-			self.__currentHour = datetm.hour
-			self.__currentMinute = datetm.minute
-
-		elif self.__currentMinute < datetm.minute:
-			self.__currentMinute = datetm.minute
-'''
 
 
 	def __convertStrToDate(self, date):
