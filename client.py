@@ -3,39 +3,24 @@ import time
 import datetime
 import socket
 import requests
+import json
+import subprocess
 
-def generateBP():
-	num = randint(0,1)
-	if num == 1:
-		systolic = str(num) + str(randint(0,9)) + str(randint(0,9))
-	else :
-		systolic = str(randint(7,9)) + str(randint(0,9))
-
-	diastolic = str(randint(0,9)) + str(randint(0,9))
-	return systolic + "/" + diastolic
-
-def generateSteps():
-	steps = str(randint(0,9)) + str(randint(0,9)) + str(randint(0,9)) + str(randint(0,9))
-	return steps
-
-def generatePulse():
-	num = randint(0,2)
-	if num == 0:
-		beat = str(randint(8,9)) + str(randint(0,9))
-	elif num == 1 :
-		beat = str(num) + str(randint(0,9)) + str(randint(0,9))
-	else :
-		beat = 200
-
-	return beat
+class MyData():
+	def __init__(self):
+		self.clientId = str(randint(0,9)) + str(randint(0,9)) + str(randint(0,9)) + str(randint(0,9)) + str(randint(0,9))+ str(randint(0,9))+ str(randint(0,9))
+						+ str(randint(0,9))+ str(randint(0,9))+ str(randint(0,9))
+		self.lat = getCurrentLat()						
+		self.long = getCurrentLong()
+		self.edgemap = {"8.8.8.8", "www.facebook.com", "www.youtube.com"}
 
 
-def serverInteraction(data, address, port, tries):
+def serverInteraction(map):
 	response = ""
 
-	if data != "":
+	if len(map) != 0:
 		while (True):
-			sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+			'''sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 			sock.setblocking(False)
 
 			send = sock.sendto(data,(address, int(port)))
@@ -56,16 +41,18 @@ def serverInteraction(data, address, port, tries):
 					print "Server is responding."
 					break
 	return response
+	'''
 
 
-def sendData(time, bp, steps, pulse, address, port, i):
-
-	task = str(time) + "#" + str(bp) + "#" + str(steps) + "#" + str(pulse) + "#" + str(i)
+def sendData(time, data, clientId):
 	try:
-		
+		map = {}
+		map["clientId"] = clientId
+		map["data"] = data
+		map["time"] = time
 		print
 		print "Request's Data:", task
-		serverInteraction(task, address, port, 1)
+		serverInteraction(map)
 			
 	except socket.error, msg:
 		print ("Error during sending message.")
@@ -73,13 +60,69 @@ def sendData(time, bp, steps, pulse, address, port, i):
 		print ("ERROR MESSAGE: ", msg[1])
 
 
+def getCurrentLat():			# got from GPS
+	return "40.0292888"
+
+
+def getCurrentLong():			# got from GPS
+	return "-105.3100174"
+
+
+def getIp(ipMap):
+	minHops = 9999
+	minIp = ""
+	
+	for ip in ipMap:
+	    command = "traceroute " + ip
+	    
+	    print "IP: ", ip
+	    traceroute = subprocess.Popen(["traceroute", '-w', '100',ip],stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+	    for line in iter(traceroute.stdout.readline,""):
+	        str = line
+
+	    print str
+	    index = str.index(' ')
+	    str = str[0:index]
+	    
+	    if minHops > int(str):
+	    	minHops = int(str)
+	    	minIp = ip
+	
+	return minIp
+
+
 
 if __name__ == '__main__':
-	i = 1000
-	address = "127.0.0.1"
-	port = raw_input("Enter a port to send: ")	
-	while (i > 0):
+	i = 
+0	me = MyData()
+	ip = getIp(me.edgemap)
+	print ip
+
+	dataList = []
+	fileIndex = str(randint(10,30))
+	filename = "/dataset/" + fileIndex + "_dataset.txt";
+
+	file = open(filename, 'r')
+	
+	for line in file:
+		line = line.strip('\n')
+		dataList.append(line)
+
+	i = 0
+	while true:
 		now = datetime.datetime.now()
-		sendData(str(now), generatePulse(), generateSteps(), generateBP(), address, port, i)
-		time.sleep(1)
-		i -=1
+		sendData(str(now), dataList[i], me.clientId)
+		i +=1
+		
+		if i > 95 :						#bcos we have just 96 lines in our dataset
+			i =0
+		
+		datetm = datetime.datetime.strptime(str(now), "%Y-%m-%d %H:%M:%S.%f")
+		if datetm.hour == 0 && datetm.minute == 0
+			if me.lat != getCurrentLat() && me.long != getCurrentLong()			# just to check if current location of client has changed
+				me.lat = getCurrentLat()
+				me.long = getCurrentLong()
+				ip = getIp(me.edgemap)
+
+		time.sleep(3000)
