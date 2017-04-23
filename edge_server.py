@@ -1,41 +1,77 @@
 import datetime
 import socket
 
-class Counters():
+class Edge():
+
 	def __init__(self):
-		self.master = {}
-#		self.bpSysCounter = 0
-#		self.bpDysCounter = 0
-#		self.stepsCounter = 0
-#		self.pulseCounter = 0
-#		self.__currentMinute = 0
-#		self.__currentHour = 0
-#		self.__currentDate = 0
-#sss		self.__num = 0
+		self.master        = {}
+		self.localSummary  = {}
+		self.clientSummary = {}
 
 
-	def __resetCounters(self):
-#		self.__bpSysCounter = 0
-#		self.__bpDysCounter = 0
-#		self.__stepsCounter = 0
-#		self.__pulseCounter = 0
-#		self.__num = 0
+	def checkResetData(self):
+		datetm = datetime.datetime.strptime(str(now), "%Y-%m-%d %H:%M:%S.%f")
+		if datetm.hour == 00 && datetm.minute == 00 && datatm.second > 0		#Reset all data at 00:05
+			self.master        = {}
+			self.localSummary  = {}
+			self.clientSummary = {}
 
 
 	def printDic(self):
 		print self.__master
 
 
+	def __getMinutesActive(self, current, new):
+		current = current + new
+		return str(current)
+
+
+	def __processClientSummary(self, newData):
+		map = processData(self.clientSummary, newData)
+		
+		self.clientSummary["steps"]     = map["steps"]
+		self.clientSummary["distance"]  = map["distance"]
+		self.clientSummary["elevation"] = map["elevation"]
+		self.clientSummary["calories"]  = map["calories"]
+		self.clientSummary["floors"]    = map["floors"]
+		self.clientSummary["active"]    = map["active"]
+		self.clientSummary["pulse"]     = map["pulse"]
+		self.clientSummary["bp"]        = map["bp"]
+
+
+	def __processLocalSummary(self, newData):
+		map = processData(self.localSummary, newData)
+		num = ((len(oldDataMap) == 0) ? 1 : int(oldDataMap["num"]))
+
+		self.localSummary["steps"]     = map["steps"]     / 
+		self.localSummary["distance"]  = map["distance"]  / num
+		self.localSummary["elevation"] = map["elevation"] / num
+		self.localSummary["calories"]  = map["calories"]  / num
+		self.localSummary["floors"]    = map["floors"]    / num
+		self.localSummary["active"]    = map["active"]    / num
+		self.localSummary["pulse"]     = map["pulse"]
+		self.localSummary["bp"]        = map["bp"]
+
+
 	def processData(self, oldDataMap, newData):
 		map = {}
-		map["steps"] = ((len(oldDataMap) == 0) ? 0 :int(oldDataMap["steps"])) + int(newData["steps"])
-		map["distance"] = ((len(oldDataMap) == 0) ? 0 :int(oldDataMap["distance"])) + int(newData["distance"])
-		map["elevation"] = ((len(oldDataMap) == 0) ? 0 :int(oldDataMap["elevation"])) + int(newData["elevation"])
-		map["calories"] = ((len(oldDataMap) == 0) ? 0 :int(oldDataMap["calories"])) + int(newData["calories"])
-		map["floors"] = ((len(oldDataMap) == 0) ? 0 :int(oldDataMap["floors"]))+ int(newData["floors"])
+		num = ((len(oldDataMap) == 0) ? 1 : int(oldDataMap["num"]))
 
-		map["pulse"] = self.__getAveragePulse(((len(oldDataMap) == 0) ? 0 :int(oldDataMap["pulse"])) + int(newData["pulse"]), int(oldDataMap["num"]))
-		map["bp"] = self.__getBp(((len(oldDataMap) == 0) ? 0 : int(oldDataMap["bp"])), int(newData["bp"]), ((len(oldDataMap) == 0) ? 1 : int(oldDataMap["num"])))
+		if newData["steps"] > 0:
+			newData["active"] = 30
+		elif:
+			newData["active"] = 0
+
+		map["steps"]     = ((len(oldDataMap) == 0) ? 0 :int(oldDataMap["steps"]))     + int(newData["steps"])
+		map["distance"]  = ((len(oldDataMap) == 0) ? 0 :int(oldDataMap["distance"]))  + int(newData["distance"])
+		map["elevation"] = ((len(oldDataMap) == 0) ? 0 :int(oldDataMap["elevation"])) + int(newData["elevation"])
+		map["calories"]  = ((len(oldDataMap) == 0) ? 0 :int(oldDataMap["calories"]))  + int(newData["calories"])
+		map["floors"]    = ((len(oldDataMap) == 0) ? 0 :int(oldDataMap["floors"]))    + int(newData["floors"])
+		
+		map["active"]= self.__getSecondsActive(((len(oldDataMap) == 0) ? 0 : int(oldDataMap["active"])), int(newData["active"]))
+
+		map["pulse"] = self.__getAveragePulse(((len(oldDataMap) == 0)  ? 0 : int(oldDataMap["pulse"])) + int(newData["pulse"]), num)
+		map["bp"]    = self.__getBp(((len(oldDataMap) == 0)            ? 0 : int(oldDataMap["bp"])), int(newData["bp"]), num)
 
 		return map
 
@@ -43,7 +79,6 @@ class Counters():
 
 	# Add data when client's that hour data is present also.
 	def addDataToExisitngHour(self, dataMap, datetm):
-
 		map = processData(self.master[dataMap["clientId"][datetm.date()][datetm.hour]], dataMap)
 		clientData = map
 		clientData["num"] = str(int(clientData["num"]) + 1)
@@ -53,10 +88,8 @@ class Counters():
 
 	# Add data when client Data is present on edge for the given date, but it doesn't contain that hour data
 	def addDataToExisitingDate(self, dataMap, datatm):
-
 		clientData = processData({}, dataMap)
 		clientData["num"] = str(int(clientData["num"]) + 1)
-
 		map1 = {datetm.hour: clientData}
 		self.master[dataMap["clientId"]][datetm.date()] = map1
 
@@ -64,10 +97,8 @@ class Counters():
 
 	# Add data when client Data is present on edge for the given date, but it doesn't contain that hour data
 	def addDataToExisitingClient(self, dataMap, datatm):
-
 		clientData = processData({}, dataMap)
 		clientData["num"] = str(int(clientData["num"]) + 1)
-
 		map1 = {datetm.hour: clientData}
 		map2 = {datetm.date(): map1}
 		self.master[dataMap["clientId"]] = map2
@@ -76,21 +107,17 @@ class Counters():
 
 	# Add data when client Data is not present also.
 	def addData(self, dataMap, datatm):
-
 		clientData = processData({}, dataMap)
 		clientData["num"] = str(int(clientData["num"]) + 1)
 		map1 = {datetm.hour: clientData}
 		map2 = {datetm.date(): map1}
-
 		self.master[dataMap["clientId"]] = map2
 
 
 
-	def incrementCounters(self, dataMap):
-		
+	def __incrementCounters(self, dataMap):
 		datetm = self.__convertStrToDate(dataMap["time"])
 		date = datetm.date()
-
 		if dataMap["clientId"][date][datetm.hour] in self.master:
 			self.addDataToMap(dataMap, datetm)
 		elif dataMap["clientId"][date] in self.master:
@@ -99,7 +126,6 @@ class Counters():
 			addDataToExisitingClient(dataMap, datetm)
 		else:
 			self.addData(dataMap, datetm)
-
 		return "Done"
 
 
@@ -125,14 +151,19 @@ class Counters():
 
 		return str(sys) + "/" + str(dys)
 
+	def processData(self, dataMap):
+		self.__incrementCounters(dataMap)
+		self.__processClientSummary(newData)
+		self.__processLocalSummary(newData)
 
 
 def extractData(str):
 	map = {}
-
-	dataMap = {'distance': 0, 'elevation': 0, 'calories': 18.556499481201172, 'pulse': '135', 'floors': 0, 'bp': '130/54', 'steps': 0}
+	clientId = ["8745274174", "8674587532", "7946547861"]
+	dataMap = {'distance': random.uniform(0, 1.0), 'elevation': random.uniform(0, 2.0),
+				'calories': random.uniform(0, 20.0), 'pulse': randint(60, 120), 'floors': random.uniform(0, 2.0), 'bp': '130/54', 'steps': randint(0,30)}
 	map["data"] = dataMap
-	map["clientId"] = "784512"
+	map["clientId"] = clientId[randint(0,3)]
 	map["time"]	= str(now)
 
 	return map 			#TODO
@@ -140,31 +171,20 @@ def extractData(str):
 
 if __name__ == '__main__':
 
-    count = Counters()
-    #port = raw_input("Enter a port to start on: ")
+    edge = Edge()
 
     try:
         while True:
-        #    print ("waiting for request ...")
-        #    request, client  = sock.recvfrom(10240)
-        #    print "request:", request
             dataMap = extractData(request)
-
-        #    clientDT = data[0]
-        #    steps = data[2]
-        #    pulse = data[1]
-        #    bpsys = data[3].split('/')[0]
-        #    bpdys = data[3].split('/')[1]
-
-            sendMessage = count.incrementCounters(dataMap) 								# where all the operations happen
+            sendMessage = edge.processData(dataMap) 								# where all the operations happen
+            
             if sendMessage == None:
                 sendMessage = ""
 
             #print("sendMessage: ", sendMessage)
-            count.printDic()
-            #time.sleep(0.9)     #as server sync msg comes after the menu has printed. i.e. the server output is slow
-            
-            send = sock.sendto(sendMessage, client)
+            edge.printDic()
+            edge.checkResetData()
+            #send = sock.sendto(sendMessage, client)
             
             print
             print
