@@ -94,8 +94,8 @@ def getIp(ipMap):
 
 
 if __name__ == '__main__':
-	i = 
-0	me = MyData()
+	i = 0
+	me = MyData()
 	ip = getIp(me.edgemap)
 	print ip
 
@@ -120,7 +120,7 @@ if __name__ == '__main__':
 		
 		datetm = datetime.datetime.strptime(str(now), "%Y-%m-%d %H:%M:%S.%f")
 		if datetm.hour == 0 && datetm.minute == 0
-			if me.lat != getCurrentLat() && me.long != getCurrentLong()			# just to check if current location of client has changed
+			if me.lat != getCurrentLat() and me.long != getCurrentLong()			# just to check if current location of client has changed
 				me.lat = getCurrentLat()
 				me.long = getCurrentLong()
 				ip = getIp(me.edgemap)
