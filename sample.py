@@ -4,10 +4,12 @@ import os
 from flask import Flask, jsonify, request
 import requests
 import json
+import datetime
 
 
 graphMenuDict = {1:"distance", 2:"elevation", 3:"calories", 4:"pulse", 5:"floors", 6:"bp", 7:"steps"}
-durationMenuDict = {1:"daily", 2:"weekly", 3:"monthly", 4:"yearly"}
+durationMenuDict = {0:"dailyall",1:"daily", 2:"weekly", 3:"monthly", 4:"yearly"}
+todayDate = str(datetime.datetime.now().date())
 
 #----------------------------------userMenu-------------------------------------
 def userMenu(clientId):
@@ -29,7 +31,7 @@ def userMenu(clientId):
                 print "Which graph do you want to generate?: "
                 graphMenuChoice = int(input())
 
-                durationMenu = "\n======DURATION MENU======\n1. Daily\n2. Weekly\n3. Monthly\n4. Yearly\n"
+                durationMenu = "\n======DURATION MENU======\n1. Stats for the Day\n2. Stats for the Week\n3. Stats for the Month\n4. Stats for the Year\n"
                 print durationMenu
                 print "Please select the time-frame for graph: "
                 durationMenuChoice = int(input())
@@ -54,15 +56,16 @@ def userMenu(clientId):
 #--------------------------------createJSONData---------------------------------
 def createJsonData(graphMenuChoice, durationMenuChoice, clientId):
     if(durationMenuChoice == 0):
-        data = {'clientId':clientId}
+        data = {'clientId':clientId,'duration':durationMenuDict[durationMenuChoice],"date":todayDate}
     else:
-        data = {'clientId':clientId,'type':graphMenuDict[graphMenuChoice],'duration':durationMenuDict[durationMenuChoice]}
+        data = {'clientId':clientId,'type':graphMenuDict[graphMenuChoice],'duration':durationMenuDict[durationMenuChoice],"date":todayDate}
     data = json.dumps(data)
     print data
 
     url = 'http://localhost:5000/post'
     response = requests.post(url, data=data, headers={"Content-Type":"application/json"})
-    print response
+    response = response.json()
+    print response['active']
 
 
 #--------------------------------performOperation-------------------------------
