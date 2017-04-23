@@ -75,7 +75,6 @@ def getIp(ipMap):
 	    command = "traceroute " + ip
 	    
 	    print "IP: ", ip
-	    #print subprocess.call(command, shell=True)
 	    traceroute = subprocess.Popen(["traceroute", '-w', '100',ip],stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 	    for line in iter(traceroute.stdout.readline,""):
@@ -95,8 +94,6 @@ def getIp(ipMap):
 
 if __name__ == '__main__':
 	i = 0
-	#address = "127.0.0.1"
-	#port = raw_input("Enter a port to send: ")	
 	me = MyData()
 	ip = getIp(me.edgemap)
 	print ip
