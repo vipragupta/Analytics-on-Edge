@@ -1,81 +1,60 @@
 {	"hourly": {
 			"1234567890": {
-						"0" :{
-							"steps" : "2345"
-							"distance" : "3.4"
-							"elevation" : "2.1"
-							"active" : "23"
-							"floors" : "1.3"
+							"steps" : "2345",
+							"distance" : "3.4",
+							"elevation" : "2.1",
+							"active" : "23",
+							"floors" : "1.3",
 							"bp" : "123/78",			
 							"steps" : "123456",	   
-							"pulse" : "98"		   
-								}, 
-						"1" : {
-							"steps" : "2345"
-							"distance" : "3.4"
-							"elevation" : "2.1"
-							"active" : "23"
-							"floors" : "1.3"
-							"bp" : "123/78",			
-							"steps" : "123456",	   
-							"pulse" : "98"		
-							},
-						"date" : "04032017"
+							"pulse" : "98",
+							"date" : "04032017"
 						},
 			"2222222222": {
-						"0" :{
-							"steps" : "2345"
-							"distance" : "3.4"
-							"elevation" : "2.1"
-							"active" : "23"
-							"floors" : "1.3"
+							"steps" : "2345",
+							"distance" : "3.4",
+							"elevation" : "2.1",
+							"active" : "23",
+							"floors" : "1.3",
 							"bp" : "123/78",			
 							"steps" : "123456",	   
-							"pulse" : "98"	
-								}, 
-						"1" : {
-							"steps" : "2345"
-							"distance" : "3.4"
-							"elevation" : "2.1"
-							"active" : "23"
-							"floors" : "1.3"
-							"bp" : "123/78",			
-							"steps" : "123456",	   
-							"pulse" : "98"		
-							},
-						"date" : "04032017"
+							"pulse" : "98",
+							"date" : "04032017"
 						}
 			},
 	"localSummary" : {
-						"steps" : "2345"
-							"distance" : "3.4"
-							"elevation" : "2.1"
-							"active" : "23"
-							"floors" : "1.3"
+						"steps" : "2345",
+							"distance" : "3.4",
+							"elevation" : "2.1",
+							"active" : "23",
+							"floors" : "1.3",
 							"bp" : "123/78",			
 							"steps" : "123456",	   
-							"pulse" : "98"	
+							"pulse" : "98",
+							"date" : "04032017"
 					},
 	"clientSummary": {
 					"1234567890":{
-							"steps" : "2345"
-							"distance" : "3.4"
-							"elevation" : "2.1"
-							"active" : "23"
-							"floors" : "1.3"
+							"steps" : "2345",
+							"distance" : "3.4",
+							"elevation" : "2.1",
+							"active" : "23",
+							"floors" : "1.3",
 							"bp" : "123/78",			
 							"steps" : "123456",	   
-							"pulse" : "98"	
+							"pulse" : "98",
+							"date" : "04032017"	
 					},
 					"2222222222":{
-							"steps" : "2345"
-							"distance" : "3.4"
-							"elevation" : "2.1"
-							"active" : "23"
-							"floors" : "1.3"
+							"steps" : "2345",
+							"distance" : "3.4",
+							"elevation" : "2.1",
+							"active" : "23",
+							"floors" : "1.3",
 							"bp" : "123/78",			
 							"steps" : "123456",	   
-							"pulse" : "98"	
+							"pulse" : "98",
+							"date" : "04032017"	
 					}
 	}
 }
