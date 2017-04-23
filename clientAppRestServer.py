@@ -1,3 +1,13 @@
+#-------------------------------------------------------------------------------
+# Name:        clientAppRestServer
+# Purpose:     This script will act as a REST server for test purposes
+#
+# Author:      Chaitra Ramachandra
+#
+# Created:     22/04/2017
+# Copyright:   (c) chaitra 2017
+#-------------------------------------------------------------------------------
+
 from flask import Flask, jsonify, request
 #from flaskext.mysql import MySQL
 import json

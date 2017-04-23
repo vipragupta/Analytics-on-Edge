@@ -1,4 +1,39 @@
+#-------------------------------------------------------------------------------
+# Name:        generateReports
+# Purpose:     This script will generate graphs for the client
+#
+# Author:      Chaitra Ramachandra
+#
+# Created:     23/04/2017
+# Copyright:   (c) chaitra 2017
+#-------------------------------------------------------------------------------
 
+import webbrowser
+import sys
+import os
+from flask import Flask, jsonify, request
+import requests
+import json
+import datetime
+
+#-------------------Generate Graph and create HTML Report-----------------------
+def displayGraph(data,result):
+    print result
+    try:
+        if(data['duration'] == "dailyall"):
+            reportName = "Summary for " + data['date']
+            bpList = (result['bp']).split("/")
+        elif(data['duration'] == "daily"):
+            reportName = "Hourly statistics of " + data['type'] + " for " + data['date']
+		# Create the HTML file for output
+        htmlReportPath = os.path.dirname(os.path.realpath(__file__))
+        htmlReportPath = os.path.join(htmlReportPath,"report.html")
+        htmlReportFp = open(htmlReportPath,"w")
+        #print htmlReportPath
+
+        # write html document
+        global html
+        html = """
 		<!DOCTYPE html>
 		<html>
             <!-- Resources -->
@@ -17,41 +52,41 @@
             	"startDuration": 2,
                 "dataProvider": [{
                     "country": "Distance",
-                    "visits": 10.4,
+                    "visits": """ + result['distance'] + """,
                     "color": "#FF0F00"
                 }, {
                     "country": "Elevation",
-                    "visits": 5.1,
+                    "visits": """ + result['elevation'] + """,
                     "color": "#FF6600"
                 }, {
                     "country": "Hour",
-                    "visits": 3,
+                    "visits": """ + result['hour'] + """,
                     "color": "#FF9E01"
                 }, {
                     "country": "Pulse",
-                    "visits": 98,
+                    "visits": """ + result['pulse'] + """,
                     "color": "#FCD202"
                 }, {
                     "country": "Floors",
-                    "visits": 5.3,
+                    "visits": """ + result['floors'] + """,
                     "color": "#F8FF01"
                 }, {
 
                     "country": "Blood Pressure Systolic",
-                    "visits": 123,
+                    "visits": """ + bpList[0] + """,
                     "color": "#B0DE09"
                 }, {
 
                     "country": "Blood Pressure Diastolic",
-                    "visits": 78,
+                    "visits": """ + bpList[1] + """,
                     "color": "#B0DE09"
                 }, {
                     "country": "Active Hours",
-                    "visits": 23,
+                    "visits": """ + result['active'] + """,
                     "color": "#04D215"
                 }, {
                     "country": "Steps",
-                    "visits": 123,
+                    "visits": """ + result['steps'] + """,
                     "color": "#0D8ECF"
                 }],
 
@@ -115,7 +150,28 @@
 
 		<body class="main">
 		<header>
-			<h1 class="heading">Report: Summary for 2017-04-23</h1>
+			<h1 class="heading">Report: """ + reportName + """</h1>
 		</header>
 		<div id="chartdiv"></div>
-		</div></body></html>
+		"""
+
+        htmlReportFp.write(html)
+
+		# write all closing tags
+        htmlReportFp.write('</div>')
+        htmlReportFp.write('</body>')
+        htmlReportFp.write('</html>')
+
+		# print results to shell
+        print "Created html report"
+        htmlReportFp.close()
+
+        webbrowser.get().open(htmlReportPath)
+
+    except:
+		comment = ('EXCEPTION: ' + str(sys.exc_info()[1]))
+		print comment
+		return 0
+
+#--------------------------------MAIN-------------------------------------------
+
