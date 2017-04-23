@@ -68,8 +68,9 @@ def displayGraph(data,result):
     print result
     try:
         if(data['duration'] == "dailyall"):
-            reportName = "Summary for today"
-            print reportName
+            reportName = "Summary for " + data['date']
+        elif(data['duration'] == "daily"):
+            reportName = "Hourly statistics of " + data['type'] + " for " + data['date']
 		# Create the HTML file for output
         htmlReportPath = os.path.dirname(os.path.realpath(__file__))
         htmlReportPath = os.path.join(htmlReportPath,"report.html")
