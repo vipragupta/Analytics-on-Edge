@@ -18,22 +18,27 @@ import datetime
 
 #-------------------Generate Graph and create HTML Report-----------------------
 def displayGraph(data,result):
+    global html
     print result
+    #Create the HTML file for output
+    htmlReportPath = os.path.dirname(os.path.realpath(__file__))
+    htmlReportPath = os.path.join(htmlReportPath,"report.html")
+    htmlReportFp = open(htmlReportPath,"w")
+    #print htmlReportPath
+
     try:
         if(data['duration'] == "dailyall"):
             reportName = "Summary for " + data['date']
-            bpList = (result['bp']).split("/")
+            #bpList = (result['bp']).split("/")
+
         elif(data['duration'] == "daily"):
             reportName = "Hourly statistics of " + data['type'] + " for " + data['date']
-		# Create the HTML file for output
-        htmlReportPath = os.path.dirname(os.path.realpath(__file__))
-        htmlReportPath = os.path.join(htmlReportPath,"report.html")
-        htmlReportFp = open(htmlReportPath,"w")
-        #print htmlReportPath
 
-        # write html document
-        global html
-        html = """
+
+
+        #write html document
+
+        htmlResourcesSection = """
 		<!DOCTYPE html>
 		<html>
             <!-- Resources -->
@@ -43,7 +48,10 @@ def displayGraph(data,result):
             <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
             <script src="https://www.amcharts.com/lib/3/themes/none.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Lato:300" rel="stylesheet">
+            <link rel="stylesheet" href="dailyAll.css" type="text/css"/>
+        """
 
+        htmlChartSection = """
             <!-- Chart code -->
             <script>
             var chart = AmCharts.makeChart("chartdiv", {
@@ -60,15 +68,15 @@ def displayGraph(data,result):
                     "color": "#FF6600"
                 }, {
                     "country": "Hour",
-                    "visits": """ + result['hour'] + """,
+                    "visits": """ + result['activemins'] + """,
                     "color": "#FF9E01"
                 }, {
                     "country": "Pulse",
-                    "visits": """ + result['pulse'] + """,
+                    "visits": """ + result['calories'] + """,
                     "color": "#FCD202"
                 }, {
                     "country": "Floors",
-                    "visits": """ + result['floors'] + """,
+                    "visits": """ + result['pulse'] + """,
                     "color": "#F8FF01"
                 }, {
 
@@ -82,7 +90,7 @@ def displayGraph(data,result):
                     "color": "#B0DE09"
                 }, {
                     "country": "Active Hours",
-                    "visits": """ + result['active'] + """,
+                    "visits": """ + result['floors'] + """,
                     "color": "#04D215"
                 }, {
                     "country": "Steps",
@@ -120,47 +128,83 @@ def displayGraph(data,result):
 
             });
             </script>
+        """
 
+        htmlHeadSection = """
         <head>
 			<title>Report</title>
-			<style>
-                #chartdiv {
-                    position: absolute;
-                    margin: auto;
-                    top: 0;
-                    right: 0;
-                    bottom: 0;
-                    left: 0;
-                    width: 80%;
-                    height: 430px;
-
-                }
-
-                .heading{
-                    color: #111;
-                    font-family: 'Lato', sans-serif;
-                    font-size: 40px;
-                    font-weight: bold;
-                    letter-spacing: -1px;
-                    line-height: 1;
-                    text-align: center;
-                }
-			</style>
 		</head>
+        """
 
+        htmlBodySectionForCharts = """
 		<body class="main">
 		<header>
 			<h1 class="heading">Report: """ + reportName + """</h1>
 		</header>
 		<div id="chartdiv"></div>
+        </body>
+        </html>
 		"""
 
-        htmlReportFp.write(html)
+        htmlBodySectionForDailyAll = """
+        <body>
+            <header>
+                <h1 class="heading">Report: """ + reportName + """</h1>
+            </header>
+            <table class="table-fill">
+                <thead>
+                    <tr>
+                        <th class="text-left">Activities</th>
+                        <th class="text-left">Values</th>
+                    </tr>
+                </thead>
+                <tbody class="table-hover">
+                    <tr>
+                        <td class="text-left">Distance</td>
+                        <td class="text-left">""" + result['distance'] + """</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">Elevation</td>
+                        <td class="text-left">""" + result['elevation'] + """</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">Active Minutes</td>
+                        <td class="text-left">""" + result['activemins'] + """</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">Calories</td>
+                        <td class="text-left">""" + result['calories'] + """</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">Pulse</td>
+                        <td class="text-left">""" + result['pulse'] + """</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">Floors</td>
+                        <td class="text-left">""" + result['floors'] + """</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">Steps</td>
+                        <td class="text-left">""" + result['steps'] + """</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">Blood Pressure</td>
+                        <td class="text-left">""" + result['bp'] + """</td>
+                    </tr>
+                </tbody>
+            </table>
+        </body>
+        </html>
+		"""
 
-		# write all closing tags
-        htmlReportFp.write('</div>')
-        htmlReportFp.write('</body>')
-        htmlReportFp.write('</html>')
+
+        if(data['duration'] == "dailyall"):
+            htmlReportFp.write(htmlResourcesSection)
+            htmlReportFp.write(htmlHeadSection)
+            htmlReportFp.write(htmlBodySectionForDailyAll)
+
+        #htmlReportFp.write(htmlChartSection)
+        #htmlReportFp.write(htmlBodySectionForCharts)
 
 		# print results to shell
         print "Created html report"
