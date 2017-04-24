@@ -73,18 +73,23 @@ def createJsonData(graphMenuChoice, durationMenuChoice, clientId, edgeIp):
     else:
         data = {'clientId':clientId,'type':graphMenuDict[graphMenuChoice],'duration':durationMenuDict[durationMenuChoice],"date":todayDate}
 
-    print data
     jsonData = json.dumps(data)
     print jsonData
 
-    #url = 'http://localhost:5000/post'
-    url = 'http://34.223.200.168/getreport'
-    response = requests.post(url, data=jsonData, headers={"Content-Type":"application/json"})
+    url = 'http://localhost:5000/post'
+    #url = 'http://34.223.200.168/getreport'
+    response = requests.post(url, data=jsonData, headers={"Content-Type":"application/json"},timeout = 10)
     print "#########################"
-    print str(response)
-    response = response.json()
+##    response = response.json()
+##    print response['client_summary'].get('distance')
 
-    displayGraph(data,response)
+    if "200" in str(response):
+        response = response.json()
+        displayGraph(data,response)
+
+    else:
+        print str(response)
+        print "Bye-Bye"
 
 #------------------------------------MAIN---------------------------------------
 if __name__ == '__main__':
