@@ -19,7 +19,7 @@ from generateReports import *
 
 
 graphMenuDict = {1:"distance", 2:"elevation", 3:"calories", 4:"pulse", 5:"floors", 6:"bp", 7:"steps"}
-durationMenuDict = {0:"dailyall",1:"daily", 2:"weekly", 3:"monthly", 4:"yearly"}
+durationMenuDict = {0:"dailyall",1:"daily", 2:"weekly", 3:"yearly"}
 todayDate = str(datetime.datetime.now().date())
 
 #----------------------------------userMenu-------------------------------------
@@ -39,7 +39,7 @@ def userMenu(clientId):
             print "Which graph do you want to generate?: "
             graphMenuChoice = int(input())
 
-            durationMenu = "\n======DURATION MENU======\n1. Stats for the Day\n2. Stats for the Week\n3. Stats for the Month\n4. Stats for the Year\n"
+            durationMenu = "\n======DURATION MENU======\n1. Stats for the Day\n2. Stats for the Week\n3. Stats for the Year\n"
             print durationMenu
             print "Please select the time-frame for graph: "
             durationMenuChoice = int(input())
