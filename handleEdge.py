@@ -5,6 +5,7 @@ from ReplaceDB import handleHourly, clientSummary, localSummary
 from RetrieveDB import dailyAll, daily, weekly, monthly, yearly, localAreaSummary
 from pymysql.cursors import DictCursor
 import json 
+import ast
 
 mysql = MySQL()
 app = Flask(__name__)
@@ -20,30 +21,32 @@ db = mysql.connect()
 @app.route('/pushdata', methods=['GET', 'POST'])
 def pushdata():#from edge server
     req = request.json
-    
-    #req = {'hourly': {'1234567890': {'distance': '3.4', 'floors': '1.3', 'steps': '123456', 'calories': '14131', 'hour': '3', 'date': '2017-04-03', 'elevation': '2.1', 'bp': '123/78', 'active': '23', 'pulse': '98'}, '2222222222': {'distance': '3.4', 'floors': '1.3', 'steps': '123456', 'calories': '14131', 'hour': '3', 'date': '2017-04-03', 'elevation': '2.1', 'bp': '123/78', 'active': '23', 'pulse': '98'}}, 'localSummary': {'elevation': '2.1', 'distance': '3.4', 'floors': '1.3', 'steps': '123456', 'calories': '14131', 'date': '2017-04-03', 'ip': '0.0.0.0', 'bp': '123/78', 'active': '23', 'pulse': '98'}, 'clientSummary': {'1234567890': {'distance': '3.4', 'floors': '1.3', 'steps': '123456', 'calories': '14131', 'date': '2017-04-03', 'elevation': '2.1', 'bp': '123/78', 'active': '23', 'pulse': '98'}, '2222222222': {'distance': '3.4', 'floors': '1.3', 'steps': '123456', 'calories': '14131', 'date': '2017-04-03', 'elevation': '2.1', 'bp': '123/78', 'active': '23', 'pulse': '98'}}}
+    print type(req)
+    print req 
+    print "\n#############################\n"
     
     if( "hourly" in req ):
-        handleHourly(req["hourly"], db)
+	inter = req["hourly"]
+	print inter
+	print type(inter)
+        handleHourly(inter , db)
     if( "clientSummary" in req):
-        clientSummary(req["clientSummary"], db)
+	inter = req["clientSummary"]
+	print inter
+	print type(inter)
+        clientSummary(inter, db)
     if( "localSummary" in req ):
-        localSummary(req["localSummary"], db)
+	inter = req["localSummary"]
+	print inter
+	print type(inter)
+        localSummary(inter, db)
     return jsonify({'StatusCode':'200','Message': 'Database addition/replacement success'})
 
 @app.route('/getreport', methods=['GET', 'POST'])
 def getreport():#from client
     req = request.json
-    
-    '''
-    req = {	
-            "clientId": "2222222222",
-            "duration": "yearly",
-            "date": "2017-04-03",
-            "type" : "pulse",
-            "ip" : "0.0.0.0"
-        }
-    '''
+    print str(req), type(req), "\n"
+ 
     if "duration" not in req:
         print "duration not in req"
         return jsonify({'StatusCode':'400','Message': 'Invalid request, please provide duration, clientid, time and other details'})

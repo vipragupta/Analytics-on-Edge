@@ -1,3 +1,5 @@
+import ast
+
 def handleHourly(req, db):
     cursor = db.cursor()
     for i in req.keys():
@@ -5,6 +7,9 @@ def handleHourly(req, db):
         data = req[i]
         if data == None:
 	    continue
+	print type(data)
+	if type(data) == "str" or type(data) == "unicode":
+		data = ast.literal_eval(data)
 	date = data.get("date")
         hr = data.get("hour")
         if date == None or hr == None:
@@ -41,6 +46,13 @@ def clientSummary(req, db):
     for i in req.keys():
         client = i
         data = req[i]
+	if data == None:
+		continue
+	print type(data)
+	if type(data) == "str" or type(data) == "unicode":
+		print "********************************************hitting here\n"
+		data = ast.literal_eval(data)
+	print type(data)
         date = data.get("date")
         steps = data.get("steps")
         elevation = data.get("elevation")
@@ -71,20 +83,21 @@ def clientSummary(req, db):
 
 def localSummary(req, db):
     cursor = db.cursor()
-    ip = req.get("ip")
+    print req
+    ip = req.get("edge_ip")
     date = req.get("date")
     steps = req.get("steps")
     elevation = req.get("elevation")
     distance = req.get("distance")
     floors = req.get("floors")
     bp = req.get("bp")
-    steps = req.get("steps")
     pulse = req.get("pulse")
     calories = req.get("calories")
     activemins = req.get("active")
 
     if ip == None or date == None or steps == None or elevation == None or distance == None or floors == None or bp == None or pulse == None or calories == None or activemins == None:
-        return
+        print "something missing"
+	return
 
     command = "REPLACE INTO localsummary (ip, date, steps, distance, elevation, calories, floors, pulse, activemins, bp) VALUES (\"" 
     command +=  ip + "\", "
