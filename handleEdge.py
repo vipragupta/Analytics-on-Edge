@@ -35,9 +35,10 @@ def getreport():#from client
     req = request.json
     req = {	
             "clientId": "2222222222",
-            "duration": "yearly",
+            "duration": "localAreaSummary",
             "date": "2017-04-03",
-            "type" : "pulse"
+            "type" : "pulse",
+            "ip" : "0.0.0.0"
         }
     if "duration" not in req:
         print "duration not in req"
@@ -53,24 +54,28 @@ def getreport():#from client
     elif(duration == "daily"):
         ret = daily(req, db)
         ret['StatusCode'] = 200
-        ret['Message'] = 'Hourly data retrieved'
+        ret['Message'] = 'Hourwise data retrieved'
         return json.dumps(ret)
     elif(duration == "weekly"):
         ret = weekly(req, db)
         print ret
         ret['StatusCode'] = 200
-        ret['Message'] = 'Daily data retrieved'
+        ret['Message'] = 'Daywise data retrieved'
         return json.dumps(ret)
     elif(duration == "yearly"):
         ret = yearly(req, db)
         print ret
         ret['StatusCode'] = 200
-        ret['Message'] = 'Daily data retrieved'
+        ret['Message'] = 'Monthwise data retrieved'
+        return json.dumps(ret)
+    elif(duration == "localAreaSummary"):
+        ret = localAreaSummary(req, db)
+        print ret
+        ret['StatusCode'] = 200
+        ret['Message'] = 'Local summary data retrieved'
         return json.dumps(ret)
     '''
     elif(duration == "monthly"):
-        #do something
-    elif(duration == "localAreaSummary"):
         #do something
     '''
     return jsonify({'StatusCode':'200','Message': 'Database search result'})

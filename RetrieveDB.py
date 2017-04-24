@@ -71,4 +71,21 @@ def yearly(req, db):
     return ret
 
 def localAreaSummary(req, db):
-    return 1
+    clientId = req["clientId"]
+    date = req["date"]
+    ip = req["ip"]
+    cursor = db.cursor()
+    command = "select * from dailysummary WHERE id=" + clientId + " AND DATE=\"" + date + "\";"
+    cursor.execute(command)
+    client_summary = cursor.fetchone()
+    client_summary["date"] = client_summary["date"].__str__()
+    
+    command = "select * from localsummary WHERE ip=\"" + ip + "\" AND DATE=\"" + date + "\";"
+    #print "\ncommand = " + str(command) + "\n"
+    cursor.execute(command)
+    localAreaSummary = cursor.fetchone()
+    localAreaSummary["date"] = localAreaSummary["date"].__str__()
+    ret = {}
+    ret["localAreaSummary"] = localAreaSummary
+    ret["client_summary"] = client_summary
+    return ret
