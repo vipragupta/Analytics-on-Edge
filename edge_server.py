@@ -216,6 +216,12 @@ class Edge():
 		else:
 			hour = str(datetm.hour)
 
+		self.clientSummary["date"] = date
+		self.clientSummary["hour"] = hour
+
+		self.localSummary["date"] = date
+		self.localSummary["hour"] = hour
+
 		finalList["clientSummary"] = self.clientSummary
 		finalList["localSummary"] = self.localSummary
 		
@@ -232,7 +238,7 @@ class Edge():
 
 		finalList["hourly"] = client
 		finalList["edge_ip"] = self.ip
-		#print finalList
+		print finalList
 		return finalList
 
 edge = Edge()
@@ -276,7 +282,7 @@ def cloudServerInteraction(map):
 			response = response.json()
 
 			print "Response: ", response
-			if response['StatusCode'] == '200':
+			if "200" in str(response)::
 				break
 			i += 1 
 			print "Server status not 200"
