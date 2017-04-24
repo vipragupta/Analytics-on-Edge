@@ -216,6 +216,7 @@ class Edge():
 		else:
 			hour = str(datetm.hour)
 
+		print "HOUR: ", hour
 		self.clientSummary["date"] = date
 		self.clientSummary["hour"] = hour
 
@@ -238,6 +239,7 @@ class Edge():
 					clientMap = dateMap[hour]
 					clientMap["hour"] = hour
 					clientMap["date"] = date
+
 			print "LEN: ", len(clientMap)
 			if len(clientMap) > 0:
 				client[clientId] = clientMap
