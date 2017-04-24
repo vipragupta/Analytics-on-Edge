@@ -20,7 +20,8 @@ db = mysql.connect()
 @app.route('/pushdata', methods=['GET', 'POST'])
 def pushdata():#from edge server
     req = request.json
-    req = {'hourly': {'1234567890': {'distance': '3.4', 'floors': '1.3', 'steps': '123456', 'calories': '14131', 'hour': '3', 'date': '2017-04-03', 'elevation': '2.1', 'bp': '123/78', 'active': '23', 'pulse': '98'}, '2222222222': {'distance': '3.4', 'floors': '1.3', 'steps': '123456', 'calories': '14131', 'hour': '3', 'date': '2017-04-03', 'elevation': '2.1', 'bp': '123/78', 'active': '23', 'pulse': '98'}}, 'localSummary': {'elevation': '2.1', 'distance': '3.4', 'floors': '1.3', 'steps': '123456', 'calories': '14131', 'date': '2017-04-03', 'ip': '0.0.0.0', 'bp': '123/78', 'active': '23', 'pulse': '98'}, 'clientSummary': {'1234567890': {'distance': '3.4', 'floors': '1.3', 'steps': '123456', 'calories': '14131', 'date': '2017-04-03', 'elevation': '2.1', 'bp': '123/78', 'active': '23', 'pulse': '98'}, '2222222222': {'distance': '3.4', 'floors': '1.3', 'steps': '123456', 'calories': '14131', 'date': '2017-04-03', 'elevation': '2.1', 'bp': '123/78', 'active': '23', 'pulse': '98'}}}
+    
+    #req = {'hourly': {'1234567890': {'distance': '3.4', 'floors': '1.3', 'steps': '123456', 'calories': '14131', 'hour': '3', 'date': '2017-04-03', 'elevation': '2.1', 'bp': '123/78', 'active': '23', 'pulse': '98'}, '2222222222': {'distance': '3.4', 'floors': '1.3', 'steps': '123456', 'calories': '14131', 'hour': '3', 'date': '2017-04-03', 'elevation': '2.1', 'bp': '123/78', 'active': '23', 'pulse': '98'}}, 'localSummary': {'elevation': '2.1', 'distance': '3.4', 'floors': '1.3', 'steps': '123456', 'calories': '14131', 'date': '2017-04-03', 'ip': '0.0.0.0', 'bp': '123/78', 'active': '23', 'pulse': '98'}, 'clientSummary': {'1234567890': {'distance': '3.4', 'floors': '1.3', 'steps': '123456', 'calories': '14131', 'date': '2017-04-03', 'elevation': '2.1', 'bp': '123/78', 'active': '23', 'pulse': '98'}, '2222222222': {'distance': '3.4', 'floors': '1.3', 'steps': '123456', 'calories': '14131', 'date': '2017-04-03', 'elevation': '2.1', 'bp': '123/78', 'active': '23', 'pulse': '98'}}}
     
     if( "hourly" in req ):
         handleHourly(req["hourly"], db)
@@ -33,6 +34,8 @@ def pushdata():#from edge server
 @app.route('/getreport', methods=['GET', 'POST'])
 def getreport():#from client
     req = request.json
+    
+    '''
     req = {	
             "clientId": "2222222222",
             "duration": "yearly",
@@ -40,6 +43,7 @@ def getreport():#from client
             "type" : "pulse",
             "ip" : "0.0.0.0"
         }
+    '''
     if "duration" not in req:
         print "duration not in req"
         return jsonify({'StatusCode':'400','Message': 'Invalid request, please provide duration, clientid, time and other details'})
@@ -80,5 +84,5 @@ def getreport():#from client
     '''
     return jsonify({'StatusCode':'200','Message': 'Database search result'})
 
-if __name__ == '__main__':
-    app.run(debug=True)
+#if __name__ == '__main__':
+#    app.run(debug=True)

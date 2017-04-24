@@ -216,6 +216,12 @@ class Edge():
 		else:
 			hour = str(datetm.hour)
 
+		self.clientSummary["date"] = date
+		self.clientSummary["hour"] = hour
+
+		self.localSummary["date"] = date
+		self.localSummary["hour"] = hour
+
 		finalList["clientSummary"] = self.clientSummary
 		finalList["localSummary"] = self.localSummary
 		
@@ -232,7 +238,7 @@ class Edge():
 
 		finalList["hourly"] = client
 		finalList["edge_ip"] = self.ip
-		#print finalList
+		print finalList
 		return finalList
 
 edge = Edge()
@@ -254,7 +260,7 @@ def extractData():
 
 
 def checkSendDataToCloud():
-	return False
+	return True
 	now = datetime.now()
 	datetm = datetime.strptime(str(now), "%Y-%m-%d %H:%M:%S.%f")
 	if datetm.minute == 00 or datetm.minute == 30:		#Reset all data at 00:05
@@ -263,7 +269,7 @@ def checkSendDataToCloud():
 		return False
 
 
-def serverInteraction(map):
+def cloudServerInteraction(map):
 	response = ""
 	i = 0
 	while i < 5:
@@ -271,12 +277,12 @@ def serverInteraction(map):
 			jsonData = json.dumps(map)
 			print "JSON DATA: ",jsonData
 
-			url = 'http://52.41.73.23:5000/pushdata'
+			url = 'http://34.223.200.168/pushdata'
 			response = requests.post(url, data=jsonData, headers={"Content-Type":"application/json"})
 			response = response.json()
 
 			print "Response: ", response
-			if response['StatusCode'] == '200':
+			if "200" in str(response):
 				break
 			i += 1 
 			print "Server status not 200"
@@ -295,13 +301,14 @@ def mypost():
 			#json1_data = json.loads()
 			edge.processIt(request.json)
 			edge.printDic()
-			response = {'StatusCode':'200','Message':'Success'}
-			response = json.dumps(response)
-
+			#response = {'StatusCode':'200','Message':'Success'}
+			#response = json.dumps(response)
+			print "$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+			time.sleep(2)
 			if checkSendDataToCloud():
 				print "Hi"
 				dic = edge.getServerData()
-				serverInteraction(dic)
+				cloudServerInteraction(dic)
 			edge.checkResetData()
 			return response
 	
@@ -313,12 +320,23 @@ def mypost():
 
 
 
-
+'''
 if __name__ == '__main__':
 	app.run(
 		host='0.0.0.0',		#Imp to open app to world
 		port='5000',
 		debug = False)
-
+'''
 # When running this code on a machine, make sure you are allowing traffic to port 5000, cmd to do the same:
 # iptables -I INPUT -p tcp --dport 5000 -j ACCEPT
+#source env/bin/activate
+#gunicorn edge_server:app
+'''
+virtualenv env
+source env/bin/activate
+pip install flask
+pip install gunicorn
+which gunicorn
+
+gunicorn hello:app
+'''
