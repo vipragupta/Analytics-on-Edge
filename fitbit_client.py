@@ -1,15 +1,13 @@
 from random import randint
 import time
 import datetime
-import socket
 import requests
 import json
 import subprocess
 
 class MyData():
 	def __init__(self):
-		self.clientId = str(randint(0,9)) + str(randint(0,9)) + str(randint(0,9)) + str(randint(0,9)) + str(randint(0,9))+ str(randint(0,9))+ str(randint(0,9))
-						+ str(randint(0,9))+ str(randint(0,9))+ str(randint(0,9))
+		self.clientId = str(randint(0,9)) + str(randint(0,9)) + str(randint(0,9)) + str(randint(0,9)) + str(randint(0,9))+ str(randint(0,9))+ str(randint(0,9)) + str(randint(0,9))+ str(randint(0,9))+ str(randint(0,9))
 		self.lat = getCurrentLat()						
 		self.long = getCurrentLong()
 		self.edgemap = {"8.8.8.8", "www.facebook.com", "www.youtube.com"}
@@ -17,31 +15,23 @@ class MyData():
 
 def serverInteraction(map):
 	response = ""
+	i = 0
+	while i < 5:
+		if len(map) != 0:
+			jsonData = json.dumps(map)
+			print "JSON DATA: ",jsonData
 
-	if len(map) != 0:
-		while (True):
-			'''sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-			sock.setblocking(False)
+			url = 'http://10.0.0.237:5000/pushSecondsData'
+			response = requests.post(url, data=jsonData, headers={"Content-Type":"application/json"})
+			response = response.json()
 
-			send = sock.sendto(data,(address, int(port)))
-			time.sleep(2)
-			try :
-				response, server  = sock.recvfrom(10240)
-				print "Response: ", response
-				if (response != None):
-					break
-				if response == "":
-					raise Exception
-			except:
-				print "Server didn't respond."
-				tries +=1
-				if (tries < 6):
-					print "Trying Again ", tries, "..."
-				else:
-					print "Server is responding."
-					break
-	return response
-	'''
+			print "Response: ", response
+			if response['StatusCode'] == '200':
+				break
+			i += 1 
+			print "Server status not 200"
+		else:
+			break;
 
 
 def sendData(time, data, clientId):
@@ -51,13 +41,10 @@ def sendData(time, data, clientId):
 		map["data"] = data
 		map["time"] = time
 		print
-		print "Request's Data:", task
 		serverInteraction(map)
 			
-	except socket.error, msg:
-		print ("Error during sending message.")
-		print ("ERROR CODE: ", msg[0])
-		print ("ERROR MESSAGE: ", msg[1])
+	except Exception as e:
+		print "Error in sendData", str(e)
 
 
 def getCurrentLat():			# got from GPS
@@ -96,13 +83,13 @@ def getIp(ipMap):
 if __name__ == '__main__':
 	i = 0
 	me = MyData()
-	ip = getIp(me.edgemap)
-	print ip
+	#ip = getIp(me.edgemap)
+	#print ip
 
 	dataList = []
 	fileIndex = str(randint(10,30))
-	filename = "/dataset/" + fileIndex + "_dataset.txt";
-
+	filename = "/home/vipra/ProjectReport2/dataset/" + fileIndex + "_dataset.txt";
+	print filename
 	file = open(filename, 'r')
 	
 	for line in file:
@@ -110,19 +97,25 @@ if __name__ == '__main__':
 		dataList.append(line)
 
 	i = 0
-	while true:
+	while True:
 		now = datetime.datetime.now()
-		sendData(str(now), dataList[i], me.clientId)
+		try:
+			sendData(str(now), dataList[i], me.clientId)
+		except Exception as e:
+			print "Retrying..."
+
+		print "data sent", i
 		i +=1
 		
 		if i > 95 :						#bcos we have just 96 lines in our dataset
 			i =0
-		
+		'''
 		datetm = datetime.datetime.strptime(str(now), "%Y-%m-%d %H:%M:%S.%f")
-		if datetm.hour == 0 && datetm.minute == 0
-			if me.lat != getCurrentLat() and me.long != getCurrentLong()			# just to check if current location of client has changed
+		
+		if datetm.hour == 0 and datetm.minute == 0:
+			if me.lat != getCurrentLat() and me.long != getCurrentLong():			# just to check if current location of client has changed
 				me.lat = getCurrentLat()
 				me.long = getCurrentLong()
 				ip = getIp(me.edgemap)
-
-		time.sleep(3000)
+		'''
+		time.sleep(1)

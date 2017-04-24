@@ -1,10 +1,9 @@
 def dailyAll(req, db):
-    duration = "dailyall"
     clientId = req["clientId"]
     date = req["date"]
     cursor = db.cursor()
     #select * from hourlysummary where id=2222222222 AND DATE(dateTime)="2017-04-03";
-    command = "select * from dailysummary where id=" + clientId + " AND DATE=\"" + date + "\";"
+    command = "select * from dailysummary WHERE id=" + clientId + " AND DATE=\"" + date + "\";"
     #print "command = " + str(command) + "\n"
     cursor.execute(command)
     ret = cursor.fetchone()
@@ -18,27 +17,35 @@ def dailyAll(req, db):
     return ret
     
 def daily(req, db):
-    duration = "daily"
     clientId = req["clientId"]
     date = req["date"]
     item = req["type"]
     cursor = db.cursor()
-    command = "select " + item + " , HOUR(dateTime)  from hourlysummary where id=" + clientId + " AND DATE(dateTime)=\"" + date + "\";"
+    command = "select " + item + " , HOUR(dateTime)  from hourlysummary WHERE id=" + clientId + " AND DATE(dateTime)=\"" + date + "\";"
     #print "\ncommand = " + str(command) + "\n"
     cursor.execute(command)
     ret = {}
     row = cursor.fetchone()
-    val = []
     while row is not None:
-        temp = {}
-        temp[ row["HOUR(dateTime)"] ] = row[item]
-        val.append( temp )
+        ret[ row["HOUR(dateTime)"].__str__() ] = row[item]
         row = cursor.fetchone()
-    ret[item] = val
     return ret
 
 def weekly(req, db):
-    return 1
+    clientId = req["clientId"]
+    date = req["date"]
+    item = req["type"]
+    cursor = db.cursor()
+    #select distinct calories, Date from dailysummary  WHERE Date BETWEEN "2017-04-03"-7 AND "2017-04-03" order by Date ASC;
+    command = "select distinct " + item + ", DATE from dailysummary WHERE DATE BETWEEN \"" + date + "\"-7 AND \"" + date + "\" AND id = " + clientId + " order by DATE ASC;"
+    #print "\ncommand = " + str(command) + "\n"
+    cursor.execute(command)
+    ret = {}
+    row = cursor.fetchone()
+    while row is not None:
+        ret[ row["DATE"].__str__() ] = row[item]
+        row = cursor.fetchone()
+    return ret
     
 def monthly(req, db):
     return 1
