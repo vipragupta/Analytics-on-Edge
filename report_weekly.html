@@ -1,0 +1,94 @@
+
+    		<!DOCTYPE html>
+    		<html>
+                <!-- Resources -->
+                <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+                <script src="https://www.amcharts.com/lib/3/serial.js"></script>
+                <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+                <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+                <script src="https://www.amcharts.com/lib/3/themes/none.js"></script>
+                <link href="https://fonts.googleapis.com/css?family=Lato:300" rel="stylesheet">
+                <script src="https://www.amcharts.com/lib/3/pie.js"></script>
+                <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+                <link rel="stylesheet" href="style.css" type="text/css"/>
+            
+                <!-- Chart code -->
+                <script>
+                var chart = AmCharts.makeChart("chartdiv", {
+                    "theme": "none",
+                    "type": "serial",
+                	"startDuration": 2,
+                    "dataProvider": [ {
+                        "country": " 2017-03-31 (Friday)",
+                        "visits": 1432.0,
+                        "color": " #FF0F00 ",
+                    },{
+                        "country": " 2017-04-01 (Saturday)",
+                        "visits": 10000.0,
+                        "color": " #FF6600 ",
+                    },{
+                        "country": " 2017-04-02 (Sunday)",
+                        "visits": 14132.0,
+                        "color": " #FF9E01 ",
+                    },{
+                        "country": " 2017-04-03 (Monday)",
+                        "visits": 13131.0,
+                        "color": " #FCD202 ",
+                    },{
+                        "country": " 2017-04-04 (Tuesday)",
+                        "visits": 15132.0,
+                        "color": " #F8FF01 ",
+                    },{
+                        "country": " 2017-04-05 (Wednesday)",
+                        "visits": 17132.0,
+                        "color": " #B0DE09 ",
+                    },{
+                        "country": " 2017-04-06 (Thursday)",
+                        "visits": 15342.0,
+                        "color": " #04D215 ",
+                    },
+                     ],
+
+                    "valueAxes": [{
+                        "position": "left",
+                        "title": "Count",
+                    }],
+                    "graphs": [{
+                        "balloonText": "[[category]]: <b>[[value]]</b>",
+                        "fillColorsField": "color",
+                        "fillAlphas": 0.75,
+                        "lineAlpha": 0.1,
+                        "type": "column",
+                        "valueField": "visits"
+                    }],
+                    "depth3D": 20,
+                	"angle": 30,
+                    "chartCursor": {
+                        "categoryBalloonEnabled": false,
+                        "cursorAlpha": 0,
+                        "zoomable": false
+                    },
+                    "categoryField": "country",
+                    "categoryAxis": {
+                        "gridPosition": "start",
+                        "labelRotation": 0
+                    },
+                    "export": {
+                    	"enabled": true
+                     }
+
+                });
+                </script>
+                
+            <head>
+    			<title>Report</title>
+    		</head>
+            
+        		<body class="main">
+        		<header>
+        			<h1 class="heading">Statistics of STEPS for the duration:  2017-03-31  to  2017-04-06</h1>
+        		</header>
+        		<div id="chartdiv"></div>
+                </body>
+                </html>
+        		
