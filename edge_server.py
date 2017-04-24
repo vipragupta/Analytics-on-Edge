@@ -221,14 +221,19 @@ class Edge():
 
 		self.localSummary["date"] = date
 		self.localSummary["hour"] = hour
+		self.localSummary["edge_ip"] = self.ip
 
 		finalList["clientSummary"] = self.clientSummary
 		finalList["localSummary"] = self.localSummary
 		
+		print "MASTER: ", self.master
 		for clientId in self.master:
 			clientMap = {}
-			if date in self.master[clientId]:
-				dateMap = self.master[clientId][date]
+			clientD = self.master[clientId]
+			print "CLIENTD: ", clientD
+			if date in clientD:
+				dateMap = self.master[clientId][str(date)]
+				print "DATEMAP: ", dateMap
 				if hour in dateMap:
 					clientMap = dateMap[hour]
 					clientMap["hour"] = hour
@@ -237,7 +242,6 @@ class Edge():
 				client[clientId] = clientMap
 
 		finalList["hourly"] = client
-		finalList["edge_ip"] = self.ip
 		print finalList
 		return finalList
 
