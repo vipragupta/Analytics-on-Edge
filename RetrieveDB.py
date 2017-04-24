@@ -37,8 +37,7 @@ def weekly(req, db):
     item = req["type"]
     cursor = db.cursor()
     #select distinct calories, Date from dailysummary  WHERE Date BETWEEN "2017-04-03"-7 AND "2017-04-03" order by Date ASC;
-    command = "select distinct " + item + ", DATE from dailysummary WHERE DATE BETWEEN \"" + date + "\"-7 AND \"" + date
-    + "\" AND id = \"" + clientId + "\" order by DATE ASC;"
+    command = "select distinct " + item + ", DATE from dailysummary WHERE DATE BETWEEN \"" + date + "\"-7 AND \"" + date + "\" AND id = \"" + clientId + "\" order by DATE ASC;"
     #print "\ncommand = " + str(command) + "\n"
     cursor.execute(command)
     ret = {}
@@ -60,8 +59,7 @@ def yearly(req, db):
     if item == "pulse":
         operation = "AVG"
     #select distinct calories, Date from dailysummary  WHERE Date BETWEEN "2017-04-03"-7 AND "2017-04-03" order by Date ASC;
-    command = "SELECT " + operation + "("+ item + "),  MONTHNAME(date) , YEAR(date)  FROM dailysummary WHERE id=\"" +
-    clientId + "\" AND date between  \"" + date + "\" - 365 AND \"" + date + "\" GROUP BY MONTHNAME(date), YEAR(date);"
+    command = "SELECT " + operation + "("+ item + "),  MONTHNAME(date) , YEAR(date)  FROM dailysummary WHERE id=\"" + clientId + "\" AND date between  \"" + date + "\" - 365 AND \"" + date + "\" GROUP BY MONTHNAME(date), YEAR(date);"
     #print "\ncommand = " + str(command) + "\n"
     cursor.execute(command)
     ret = {}
