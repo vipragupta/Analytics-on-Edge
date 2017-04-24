@@ -282,7 +282,7 @@ def cloudServerInteraction(map):
 			response = response.json()
 
 			print "Response: ", response
-			if "200" in str(response)::
+			if "200" in str(response):
 				break
 			i += 1 
 			print "Server status not 200"
