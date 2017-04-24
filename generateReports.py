@@ -19,22 +19,16 @@ import datetime
 #-------------------Generate Graph and create HTML Report-----------------------
 def displayGraph(data,result):
     global html
-    print result
+    print "RESULT in displayGraph():", result
     del result['Message']
     del result['StatusCode']
-    if (len(result) > 0):
-        temp = result.keys()
-        keys = []
-        for i in temp:
-            keys.append(int(i))
-        keys.sort()
-        print keys
 
     #Create the HTML file for output
     htmlReportPath = os.path.dirname(os.path.realpath(__file__))
     htmlReportPath = os.path.join(htmlReportPath,"report.html")
     htmlReportFp = open(htmlReportPath,"w")
     print htmlReportPath
+    print "********************"
 
     try:
         if(data['duration'] == "dailyall"):
@@ -42,6 +36,13 @@ def displayGraph(data,result):
             #bpList = (result['bp']).split("/")
 
         elif(data['duration'] == "daily"):
+            if (len(result) > 0):
+                temp = result.keys()
+                keys = []
+                for i in temp:
+                    keys.append(int(i))
+                keys.sort()
+                print keys
             reportName = "Hourly statistics of " + data['type'] + " for " + data['date']
 
 
@@ -82,35 +83,35 @@ def displayGraph(data,result):
                         <tbody class="table-hover">
                             <tr>
                                 <td class="text-left">Distance</td>
-                                <td class="text-left">""" + result['distance'] + """</td>
+                                <td class="text-left">""" + str(result['distance']) + """</td>
                             </tr>
                             <tr>
                                 <td class="text-left">Elevation</td>
-                                <td class="text-left">""" + result['elevation'] + """</td>
+                                <td class="text-left">""" + str(result['elevation']) + """</td>
                             </tr>
                             <tr>
                                 <td class="text-left">Active Minutes</td>
-                                <td class="text-left">""" + result['activemins'] + """</td>
+                                <td class="text-left">""" + str(result['activemins']) + """</td>
                             </tr>
                             <tr>
                                 <td class="text-left">Calories</td>
-                                <td class="text-left">""" + result['calories'] + """</td>
+                                <td class="text-left">""" + str(result['calories']) + """</td>
                             </tr>
                             <tr>
                                 <td class="text-left">Pulse</td>
-                                <td class="text-left">""" + result['pulse'] + """</td>
+                                <td class="text-left">""" + str(result['pulse']) + """</td>
                             </tr>
                             <tr>
                                 <td class="text-left">Floors</td>
-                                <td class="text-left">""" + result['floors'] + """</td>
+                                <td class="text-left">""" + str(result['floors']) + """</td>
                             </tr>
                             <tr>
                                 <td class="text-left">Steps</td>
-                                <td class="text-left">""" + result['steps'] + """</td>
+                                <td class="text-left">""" + str(result['steps']) + """</td>
                             </tr>
                             <tr>
                                 <td class="text-left">Blood Pressure</td>
-                                <td class="text-left">""" + result['bp'] + """</td>
+                                <td class="text-left">""" + str(result['bp']) + """</td>
                             </tr>
                         </tbody>
                     </table>
