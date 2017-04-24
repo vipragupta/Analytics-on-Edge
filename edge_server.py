@@ -49,6 +49,8 @@ class Edge():
 	def __processClientSummary(self, newData):
 		data = ast.literal_eval(newData["data"])
 		clientSum = self.clientSummary[newData["clientId"]] if newData["clientId"] in self.clientSummary else {}
+		datetm = self.__convertStrToDate(newData["time"])
+		date = self.getDate(datetm)
 		map = self.__processData(clientSum, data)
 		if len(map) > 0:
 			clientSum["steps"]     = map["steps"]
@@ -60,6 +62,7 @@ class Edge():
 			clientSum["pulse"]     = map["pulse"]
 			clientSum["bp"]        = map["bp"]
 			clientSum["num"]       = map["num"]
+			clientSum["date"]	   = date
 			self.clientSummary[newData["clientId"]] = clientSum
 
 
@@ -217,38 +220,27 @@ class Edge():
 			hour = str(datetm.hour)
 
 		print "HOUR: ", hour
-		self.clientSummary["date"] = date
-		self.clientSummary["hour"] = hour
 
 		self.localSummary["date"] = date
-		self.localSummary["hour"] = hour
 		self.localSummary["edge_ip"] = self.ip
 
 		finalList["clientSummary"] = self.clientSummary
 		finalList["localSummary"] = self.localSummary
 		
-		print "MASTER: ", self.master
 		for clientId in self.master:
 			clientMap = {}
 			clientD = self.master[clientId]
-			print "CLIENTD: ", clientD
 			if date in clientD:
 				dateMap = self.master[clientId][str(date)]
-				print "DATEMAP: ", dateMap
 				if hour in dateMap:
 					clientMap = dateMap[hour]
 					clientMap["hour"] = hour
 					clientMap["date"] = date
 
-			print "LEN: ", len(clientMap)
 			if len(clientMap) > 0:
 				client[clientId] = clientMap
-			print "CLIENT MAP: ", client
 
 		finalList["hourly"] = client
-		print
-		print
-		print finalList
 		return finalList
 
 edge = Edge()
@@ -270,7 +262,6 @@ def extractData():
 
 
 def checkSendDataToCloud():
-	return True
 	now = datetime.now()
 	datetm = datetime.strptime(str(now), "%Y-%m-%d %H:%M:%S.%f")
 	if datetm.minute == 00 or datetm.minute == 30:		#Reset all data at 00:05
@@ -282,20 +273,23 @@ def checkSendDataToCloud():
 def cloudServerInteraction(map):
 	response = ""
 	i = 0
-	while i < 5:
+	while i < 1:
 		if len(map) != 0:
 			jsonData = json.dumps(map)
-			print "JSON DATA: ",jsonData
+			print "CLOUD DATA: ",jsonData
 
 			url = 'http://34.223.200.168/pushdata'
-			response = requests.post(url, data=jsonData, headers={"Content-Type":"application/json"})
-			response = response.json()
+			try:
+				response = requests.post(url, data=jsonData, headers={"Content-Type":"application/json"}, timeout=1)
+			except Exception as e:
+				print str(e)
+				response = ""
 
 			print "Response: ", response
 			if "200" in str(response):
 				break
 			i += 1 
-			print "Server status not 200"
+			print "Server didn't respond."
 		else:
 			break;
 
@@ -313,14 +307,11 @@ def mypost():
 			edge.printDic()
 			#response = {'StatusCode':'200','Message':'Success'}
 			#response = json.dumps(response)
-			print "$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
-			time.sleep(2)
 			if checkSendDataToCloud():
-				print "Hi"
 				dic = edge.getServerData()
 				cloudServerInteraction(dic)
 			edge.checkResetData()
-			return response
+			return jsonify({'StatusCode':'200','Message':'Success'})
 	
 	except Exception as e:
 		print "Error", str(e)
@@ -330,13 +321,13 @@ def mypost():
 
 
 
-'''
+
 if __name__ == '__main__':
 	app.run(
 		host='0.0.0.0',		#Imp to open app to world
 		port='5000',
 		debug = False)
-'''
+
 # When running this code on a machine, make sure you are allowing traffic to port 5000, cmd to do the same:
 # iptables -I INPUT -p tcp --dport 5000 -j ACCEPT
 #source env/bin/activate
