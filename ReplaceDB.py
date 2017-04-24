@@ -3,10 +3,12 @@ def handleHourly(req, db):
     for i in req.keys():
         client = i
         data = req[i]
-        date = data.get("date")
+        if data == None:
+	    continue
+	date = data.get("date")
         hr = data.get("hour")
         if date == None or hr == None:
-            return
+            continue
         dateTime = date + " " + str(hr) + ":00:00"
         steps = data.get("steps")
         elevation = data.get("elevation")
@@ -18,7 +20,7 @@ def handleHourly(req, db):
         activemins = data.get("active")
         
         if client == None or date == None or hr == None or steps == None or elevation == None or distance == None or floors == None or bp == None or pulse == None or calories == None or activemins == None:
-                return
+                continue
 
         command = "REPLACE INTO hourlysummary (id, dateTime, steps, distance, elevation, calories, floors, pulse, activemins, bp) VALUES (\"" 
         command += client + "\", \""
@@ -51,7 +53,7 @@ def clientSummary(req, db):
         activemins = data.get("active")
         
         if client == None or date == None or steps == None or elevation == None or distance == None or floors == None or bp == None or pulse == None or calories == None or activemins == None:
-            return
+            continue
 
         command = "REPLACE INTO dailysummary (id, date, steps, distance, elevation, calories, floors, pulse, activemins, bp) VALUES (\"" 
         command += client + "\", "
