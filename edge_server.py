@@ -295,8 +295,9 @@ def mypost():
 			#json1_data = json.loads()
 			edge.processIt(request.json)
 			edge.printDic()
-			response = {'StatusCode':'200','Message':'Success'}
-			response = json.dumps(response)
+			#response = {'StatusCode':'200','Message':'Success'}
+			#response = json.dumps(response)
+			print "$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
 			time.sleep(2)
 			if checkSendDataToCloud():
 				print "Hi"
