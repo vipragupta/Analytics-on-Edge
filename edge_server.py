@@ -238,10 +238,14 @@ class Edge():
 					clientMap = dateMap[hour]
 					clientMap["hour"] = hour
 					clientMap["date"] = date
+			print "LEN: ", len(clientMap)
 			if len(clientMap) > 0:
 				client[clientId] = clientMap
+			print "CLIENT MAP: ", client
 
 		finalList["hourly"] = client
+		print
+		print
 		print finalList
 		return finalList
 
