@@ -8,7 +8,6 @@ import json
 
 mysql = MySQL()
 app = Flask(__name__)
-app2 = Flask("temp")
 
 # MySQL configurations
 app.config['MYSQL_DATABASE_USER'] = 'root'
@@ -31,16 +30,14 @@ def pushdata():#from edge server
         localSummary(req["localSummary"], db)
     return jsonify({'StatusCode':'200','Message': 'Database addition/replacement success'})
 
-
-
 @app.route('/getreport', methods=['GET', 'POST'])
 def getreport():#from client
     req = request.json
     req = {	
             "clientId": "2222222222",
-            "duration": "weekly",
+            "duration": "yearly",
             "date": "2017-04-03",
-            "type" : "calories"
+            "type" : "pulse"
         }
     if "duration" not in req:
         print "duration not in req"
@@ -64,15 +61,19 @@ def getreport():#from client
         ret['StatusCode'] = 200
         ret['Message'] = 'Daily data retrieved'
         return json.dumps(ret)
+    elif(duration == "yearly"):
+        ret = yearly(req, db)
+        print ret
+        ret['StatusCode'] = 200
+        ret['Message'] = 'Daily data retrieved'
+        return json.dumps(ret)
     '''
     elif(duration == "monthly"):
-        #do something
-    elif(duration == "yearly"):
         #do something
     elif(duration == "localAreaSummary"):
         #do something
     '''
-    return jsonify({'StatusCode':'200','Message': 'Database addition/replacement success'})
+    return jsonify({'StatusCode':'200','Message': 'Database search result'})
 
 if __name__ == '__main__':
     app.run(debug=True)

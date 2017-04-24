@@ -51,7 +51,24 @@ def monthly(req, db):
     return 1
 
 def yearly(req, db):
-    return 1
+    clientId = req["clientId"]
+    date = req["date"]
+    item = req["type"]
+    cursor = db.cursor()
+    operation = "SUM"
+    if item == "pulse":
+        operation = "AVG"
+    #select distinct calories, Date from dailysummary  WHERE Date BETWEEN "2017-04-03"-7 AND "2017-04-03" order by Date ASC;
+    command = "SELECT " + operation + "("+ item + "),  MONTHNAME(date)  FROM dailysummary WHERE date between  \"" + date + "\" - 365 AND \"" + date + "\" GROUP BY (MONTHNAME(date));"
+    #print "\ncommand = " + str(command) + "\n"
+    cursor.execute(command)
+    ret = {}
+    row = cursor.fetchone()
+    #print "\n", str(row.keys()), "\n"
+    while row is not None:
+        ret[ row["MONTHNAME(date)"].__str__() ] = row[operation + "(" + item + ")"]
+        row = cursor.fetchone()
+    return ret
 
 def localAreaSummary(req, db):
     return 1
