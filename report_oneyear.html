@@ -1,0 +1,105 @@
+
+		<!DOCTYPE html>
+		<html>
+            <!-- Resources -->
+            <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+            <script src="https://www.amcharts.com/lib/3/serial.js"></script>
+            <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+            <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+            <script src="https://www.amcharts.com/lib/3/themes/none.js"></script>
+            <link href="https://fonts.googleapis.com/css?family=Lato:300" rel="stylesheet">
+            <script src="https://www.amcharts.com/lib/3/pie.js"></script>
+            <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+            <link rel="stylesheet" href="style.css" type="text/css"/>
+        
+                <!-- Chart code -->
+                <script>
+                var chart = AmCharts.makeChart("chartdiv2", {
+                  "type": "pie",
+                  "startDuration": 0,
+                   "theme": "light",
+                  "addClassNames": true,
+                  "legend":{
+                   	"position":"right",
+                    "marginRight":100,
+                    "autoMargins":false
+                  },
+                  "innerRadius": "30%",
+                  "defs": {
+                    "filter": [{
+                      "id": "shadow",
+                      "width": "200%",
+                      "height": "200%",
+                      "feOffset": {
+                        "result": "offOut",
+                        "in": "SourceAlpha",
+                        "dx": 0,
+                        "dy": 0
+                      },
+                      "feGaussianBlur": {
+                        "result": "blurOut",
+                        "in": "offOut",
+                        "stdDeviation": 5
+                      },
+                      "feBlend": {
+                        "in": "SourceGraphic",
+                        "in2": "blurOut",
+                        "mode": "normal"
+                      }
+                    }]
+                  },
+                  "dataProvider": [ {
+                    "country": " April_2017 ",
+                    "litres": " 45.0 ",
+                },{
+                    "country": " January_2017 ",
+                    "litres": " 98.0 ",
+                },{
+                    "country": " November_2016 ",
+                    "litres": " 70.0 ",
+                },{
+                    "country": " February_2017 ",
+                    "litres": " 67.0 ",
+                },{
+                    "country": " March_2017 ",
+                    "litres": " 89.0 ",
+                },{
+                    "country": " December_2016 ",
+                    "litres": " 144.0 ",
+                },
+                 ],
+                  "valueField": "litres",
+                  "titleField": "country",
+                  "export": {
+                    "enabled": true
+                  }
+                });
+
+                chart.addListener("init", handleInit);
+
+                chart.addListener("rollOverSlice", function(e) {
+                  handleRollOver(e);
+                });
+
+                function handleInit(){
+                  chart.legend.addListener("rollOverItem", handleRollOver);
+                }
+
+                function handleRollOver(e){
+                  var wedge = e.dataItem.wedge.node;
+                  wedge.parentNode.appendChild(wedge);
+                }
+                </script>
+                
+        <head>
+			<title>Report</title>
+		</head>
+        
+    		<body class="main">
+    		<header>
+    			<h1 class="heading">Statistics of CALORIES for the duration: 2016 - 2017</h1>
+    		</header>
+    		<div id="chartdiv2"></div>
+            </body>
+            </html>
+    		

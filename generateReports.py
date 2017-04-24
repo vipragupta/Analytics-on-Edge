@@ -27,13 +27,13 @@ def displayGraph(data,result):
     htmlReportPath = os.path.dirname(os.path.realpath(__file__))
     htmlReportPath = os.path.join(htmlReportPath,"report.html")
     htmlReportFp = open(htmlReportPath,"w")
-    print htmlReportPath
-    print "********************"
+##    print htmlReportPath
+##    print "********************"
 
     try:
         if(data['duration'] == "dailyall"):
-            reportName = "Summary for " + data['date']
-            #bpList = (result['bp']).split("/")
+            reportName = "Summary for today: " + data['date']
+##            bpList = (result['bp']).split("/")
 
         elif(data['duration'] == "daily"):
             if (len(result) > 0):
@@ -42,12 +42,19 @@ def displayGraph(data,result):
                 for i in temp:
                     keys.append(int(i))
                 keys.sort()
-                print keys
-            reportName = "Hourly statistics of " + data['type'] + " for " + data['date']
+##                print keys
+            reportName = "Hourly statistics of " + data['type'].upper() + " for " + data['date']
 
+        elif(data['duration'] == "yearly"):
+            if (len(result) > 0):
+                temp = result.keys()
+                keys = []
+                for i in temp:
+                    keys.append(str(i))
+            year = data['date'].split('-')[0]
+            reportName = "Statistics of " + data['type'].upper() + " for the duration: " + str(int(year)-1) + " - " + str(year)
 
         #write html document
-
         htmlResourcesSection = """
 		<!DOCTYPE html>
 		<html>
@@ -58,7 +65,9 @@ def displayGraph(data,result):
             <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
             <script src="https://www.amcharts.com/lib/3/themes/none.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Lato:300" rel="stylesheet">
-            <link rel="stylesheet" href="dailyAll.css" type="text/css"/>
+            <script src="https://www.amcharts.com/lib/3/pie.js"></script>
+            <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+            <link rel="stylesheet" href="style.css" type="text/css"/>
         """
 
         htmlHeadSection = """
@@ -67,11 +76,12 @@ def displayGraph(data,result):
 		</head>
         """
 
+        #Graph for per day statistics for all items
         if(data['duration'] == "dailyall"):
             htmlBodySectionForDailyAll = """
                 <body>
                     <header>
-                        <h1 class="heading">Report: """ + reportName + """</h1>
+                        <h1 class="heading">""" + reportName + """</h1>
                     </header>
                     <table class="table-fill">
                         <thead>
@@ -122,6 +132,7 @@ def displayGraph(data,result):
             htmlReportFp.write(htmlHeadSection)
             htmlReportFp.write(htmlBodySectionForDailyAll)
 
+        #Graph for per day statistics for one item Eg: Calories
         elif(data['duration'] == "daily"):
             htmlChartSection = """
             <!-- Chart code -->
@@ -181,9 +192,99 @@ def displayGraph(data,result):
             htmlBodySectionForCharts = """
     		<body class="main">
     		<header>
-    			<h1 class="heading">Report: """ + reportName + """</h1>
+    			<h1 class="heading">""" + reportName + """</h1>
     		</header>
     		<div id="chartdiv"></div>
+            </body>
+            </html>
+    		"""
+
+            htmlReportFp.write(htmlResourcesSection)
+            htmlReportFp.write(htmlChartSection)
+            htmlReportFp.write(htmlHeadSection)
+            htmlReportFp.write(htmlBodySectionForCharts)
+
+
+        #Graph for per year statistics of one item
+        elif(data['duration'] == "yearly"):
+            htmlChartSection = """
+                <!-- Chart code -->
+                <script>
+                var chart = AmCharts.makeChart("chartdiv2", {
+                  "type": "pie",
+                  "startDuration": 0,
+                   "theme": "light",
+                  "addClassNames": true,
+                  "legend":{
+                   	"position":"right",
+                    "marginRight":100,
+                    "autoMargins":false
+                  },
+                  "innerRadius": "30%",
+                  "defs": {
+                    "filter": [{
+                      "id": "shadow",
+                      "width": "200%",
+                      "height": "200%",
+                      "feOffset": {
+                        "result": "offOut",
+                        "in": "SourceAlpha",
+                        "dx": 0,
+                        "dy": 0
+                      },
+                      "feGaussianBlur": {
+                        "result": "blurOut",
+                        "in": "offOut",
+                        "stdDeviation": 5
+                      },
+                      "feBlend": {
+                        "in": "SourceGraphic",
+                        "in2": "blurOut",
+                        "mode": "normal"
+                      }
+                    }]
+                  },
+                  "dataProvider": [ """
+
+            for i in keys:
+                s = """{
+                    "country": " """ + str(i) + """ ",
+                    "litres": " """ + str(result[str(i)]) + """ ",
+                },"""
+                htmlChartSection = htmlChartSection + s
+
+            htmlChartSection = htmlChartSection + """
+                 ],
+                  "valueField": "litres",
+                  "titleField": "country",
+                  "export": {
+                    "enabled": true
+                  }
+                });
+
+                chart.addListener("init", handleInit);
+
+                chart.addListener("rollOverSlice", function(e) {
+                  handleRollOver(e);
+                });
+
+                function handleInit(){
+                  chart.legend.addListener("rollOverItem", handleRollOver);
+                }
+
+                function handleRollOver(e){
+                  var wedge = e.dataItem.wedge.node;
+                  wedge.parentNode.appendChild(wedge);
+                }
+                </script>
+                """
+
+            htmlBodySectionForCharts = """
+    		<body class="main">
+    		<header>
+    			<h1 class="heading">""" + reportName + """</h1>
+    		</header>
+    		<div id="chartdiv2"></div>
             </body>
             </html>
     		"""
