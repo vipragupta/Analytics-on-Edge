@@ -71,17 +71,16 @@ def createJsonData(graphMenuChoice, durationMenuChoice, clientId):
     response = requests.post(url, data=jsonData, headers={"Content-Type":"application/json"})
     response = response.json()
     print response
-    del response['Message']
-    del response['StatusCode']
-    dummy = response.keys()
-    keys = []
-    for i in dummy:
-        keys.append(int(i))
+##    del response['Message']
+##    del response['StatusCode']
+##    temp = response.keys()
+##    keys = []
+##    for i in dummy:
+##        keys.append(int(i))
+##    keys.sort()
+##    print keys
 
-    keys.sort()
-    print keys()
-
-    #displayGraph(data,response)
+    displayGraph(data,response)
 
 
 #------------------------------------MAIN---------------------------------------

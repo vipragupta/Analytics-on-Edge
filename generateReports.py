@@ -22,13 +22,19 @@ def displayGraph(data,result):
     print result
     del result['Message']
     del result['StatusCode']
-    keys = result.keys()
-    print keys
+    if (len(result) > 0):
+        temp = result.keys()
+        keys = []
+        for i in temp:
+            keys.append(int(i))
+        keys.sort()
+        print keys
+
     #Create the HTML file for output
     htmlReportPath = os.path.dirname(os.path.realpath(__file__))
     htmlReportPath = os.path.join(htmlReportPath,"report.html")
     htmlReportFp = open(htmlReportPath,"w")
-    #print htmlReportPath
+    print htmlReportPath
 
     try:
         if(data['duration'] == "dailyall"):
@@ -123,45 +129,21 @@ def displayGraph(data,result):
                 "theme": "none",
                 "type": "serial",
             	"startDuration": 2,
-                "dataProvider": [{
-                    "country": "Distance",
-                    "visits": """ + result['distance'] + """,
-                    "color": "#FF0F00"
-                }, {
-                    "country": "Elevation",
-                    "visits": """ + result['elevation'] + """,
-                    "color": "#FF6600"
-                }, {
-                    "country": "Hour",
-                    "visits": """ + result['activemins'] + """,
-                    "color": "#FF9E01"
-                }, {
-                    "country": "Pulse",
-                    "visits": """ + result['calories'] + """,
-                    "color": "#FCD202"
-                }, {
-                    "country": "Floors",
-                    "visits": """ + result['pulse'] + """,
-                    "color": "#F8FF01"
-                }, {
+                "dataProvider": [ """
 
-                    "country": "Blood Pressure Systolic",
-                    "visits": """ + bpList[0] + """,
-                    "color": "#B0DE09"
-                }, {
+            colorsIndex = 0
+            colors = ["#FF0F00","#FF6600","#FF9E01","#FCD202","#F8FF01","#B0DE09","#04D215","#92f3aa","#4debc4","#0D8ECF","#36b3f2","#36e2f2","#0D52D1","#2A0CD0","#8A0CCF","#CD0D74","#754DEB","#8764ee","#997bf0","#aa92f3","#4dc3eb","#92daf3","#DDDDDD","#999999","#333333","#000000"]
+            for i in keys:
+                s = """{
+                    "country": """ + str(i) + """,
+                    "visits": """ + str(result[str(i)]) + """,
+                    "color": " """ + colors[colorsIndex] + """ ",
+                },"""
+                colorsIndex += 1
+                htmlChartSection = htmlChartSection + s
 
-                    "country": "Blood Pressure Diastolic",
-                    "visits": """ + bpList[1] + """,
-                    "color": "#B0DE09"
-                }, {
-                    "country": "Active Hours",
-                    "visits": """ + result['floors'] + """,
-                    "color": "#04D215"
-                }, {
-                    "country": "Steps",
-                    "visits": """ + result['steps'] + """,
-                    "color": "#0D8ECF"
-                }],
+            htmlChartSection = htmlChartSection + """
+                 ],
 
                 "valueAxes": [{
                     "position": "left",
@@ -193,21 +175,22 @@ def displayGraph(data,result):
 
             });
             </script>
-        """
+            """
 
+            htmlBodySectionForCharts = """
+    		<body class="main">
+    		<header>
+    			<h1 class="heading">Report: """ + reportName + """</h1>
+    		</header>
+    		<div id="chartdiv"></div>
+            </body>
+            </html>
+    		"""
 
-
-        htmlBodySectionForCharts = """
-		<body class="main">
-		<header>
-			<h1 class="heading">Report: """ + reportName + """</h1>
-		</header>
-		<div id="chartdiv"></div>
-        </body>
-        </html>
-		"""
-            #htmlReportFp.write(htmlChartSection)
-            #htmlReportFp.write(htmlBodySectionForCharts)
+            htmlReportFp.write(htmlResourcesSection)
+            htmlReportFp.write(htmlChartSection)
+            htmlReportFp.write(htmlHeadSection)
+            htmlReportFp.write(htmlBodySectionForCharts)
 
 		# print results to shell
         print "Created html report"
