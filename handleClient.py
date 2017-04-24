@@ -33,29 +33,34 @@ def getreport():#from client
         ret = dailyAll(req, db)
         ret['StatusCode'] = 200
         ret['Message'] = 'Summary data retrieved'
-        return json.dumps(ret)
+        print ret
+	return json.dumps(ret)
     elif(duration == "daily"):
         ret = daily(req, db)
         ret['StatusCode'] = 200
         ret['Message'] = 'Hourwise data retrieved'
+        print ret
         return json.dumps(ret)
     elif(duration == "weekly"):
         ret = weekly(req, db)
         print ret
         ret['StatusCode'] = 200
         ret['Message'] = 'Daywise data retrieved'
+        print ret
         return json.dumps(ret)
     elif(duration == "yearly"):
         ret = yearly(req, db)
         print ret
         ret['StatusCode'] = 200
         ret['Message'] = 'Monthwise data retrieved'
+        print ret
         return json.dumps(ret)
     elif(duration == "localAreaSummary"):
         ret = localAreaSummary(req, db)
         print ret
         ret['StatusCode'] = 200
         ret['Message'] = 'Local summary data retrieved'
+        print ret
         return json.dumps(ret)
     '''
     elif(duration == "monthly"):
