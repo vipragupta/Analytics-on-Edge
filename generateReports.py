@@ -159,7 +159,7 @@ def displayGraph(data,result):
 
                 "valueAxes": [{
                     "position": "left",
-                    "title": "Count"
+                    "title": "Count",
                 }],
                 "graphs": [{
                     "balloonText": "[[category]]: <b>[[value]]</b>",
@@ -179,7 +179,7 @@ def displayGraph(data,result):
                 "categoryField": "country",
                 "categoryAxis": {
                     "gridPosition": "start",
-                    "labelRotation": 40
+                    "labelRotation": 0
                 },
                 "export": {
                 	"enabled": true

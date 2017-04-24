@@ -8,7 +8,9 @@
             <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
             <script src="https://www.amcharts.com/lib/3/themes/none.js"></script>
             <link href="https://fonts.googleapis.com/css?family=Lato:300" rel="stylesheet">
-            <link rel="stylesheet" href="dailyAll.css" type="text/css"/>
+            <script src="https://www.amcharts.com/lib/3/pie.js"></script>
+            <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+            <link rel="stylesheet" href="style.css" type="text/css"/>
         
             <!-- Chart code -->
             <script>
@@ -18,7 +20,7 @@
             	"startDuration": 2,
                 "dataProvider": [ {
                     "country": 0,
-                    "visits": 0.0,
+                    "visits": 15.0,
                     "color": " #FF0F00 ",
                 },{
                     "country": 1,
@@ -117,7 +119,7 @@
 
                 "valueAxes": [{
                     "position": "left",
-                    "title": "Count"
+                    "title": "Count",
                 }],
                 "graphs": [{
                     "balloonText": "[[category]]: <b>[[value]]</b>",
@@ -137,7 +139,7 @@
                 "categoryField": "country",
                 "categoryAxis": {
                     "gridPosition": "start",
-                    "labelRotation": 40
+                    "labelRotation": 0
                 },
                 "export": {
                 	"enabled": true
@@ -152,7 +154,7 @@
         
     		<body class="main">
     		<header>
-    			<h1 class="heading">Report: Hourly statistics of elevation for 2017-04-23</h1>
+    			<h1 class="heading">Hourly statistics of DISTANCE for 2017-04-23</h1>
     		</header>
     		<div id="chartdiv"></div>
             </body>
