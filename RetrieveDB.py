@@ -3,7 +3,7 @@ def dailyAll(req, db):
     date = req["date"]
     cursor = db.cursor()
     #select * from hourlysummary where id=2222222222 AND DATE(dateTime)="2017-04-03";
-    command = "select * from dailysummary WHERE id=" + clientId + " AND DATE=\"" + date + "\";"
+    command = "select * from dailysummary WHERE id=\"" + clientId + "\" AND DATE=\"" + date + "\";"
     #print "command = " + str(command) + "\n"
     cursor.execute(command)
     ret = cursor.fetchone()
@@ -21,7 +21,7 @@ def daily(req, db):
     date = req["date"]
     item = req["type"]
     cursor = db.cursor()
-    command = "select " + item + " , HOUR(dateTime)  from hourlysummary WHERE id=" + clientId + " AND DATE(dateTime)=\"" + date + "\";"
+    command = "select " + item + " , HOUR(dateTime)  from hourlysummary WHERE id=\"" + clientId + "\" AND DATE(dateTime)=\"" + date + "\";"
     #print "\ncommand = " + str(command) + "\n"
     cursor.execute(command)
     ret = {}
@@ -37,7 +37,7 @@ def weekly(req, db):
     item = req["type"]
     cursor = db.cursor()
     #select distinct calories, Date from dailysummary  WHERE Date BETWEEN "2017-04-03"-7 AND "2017-04-03" order by Date ASC;
-    command = "select distinct " + item + ", DATE from dailysummary WHERE DATE BETWEEN \"" + date + "\"-7 AND \"" + date + "\" AND id = " + clientId + " order by DATE ASC;"
+    command = "select distinct " + item + ", DATE from dailysummary WHERE DATE BETWEEN \"" + date + "\"-7 AND \"" + date + "\" AND id = \"" + clientId + "\" order by DATE ASC;"
     #print "\ncommand = " + str(command) + "\n"
     cursor.execute(command)
     ret = {}
@@ -59,7 +59,7 @@ def yearly(req, db):
     if item == "pulse":
         operation = "AVG"
     #select distinct calories, Date from dailysummary  WHERE Date BETWEEN "2017-04-03"-7 AND "2017-04-03" order by Date ASC;
-    command = "SELECT " + operation + "("+ item + "),  MONTHNAME(date) , YEAR(date)  FROM dailysummary WHERE date between  \"" + date + "\" - 365 AND \"" + date + "\" GROUP BY MONTHNAME(date), YEAR(date);"
+    command = "SELECT " + operation + "("+ item + "),  MONTHNAME(date) , YEAR(date)  FROM dailysummary WHERE id=\"" + clientId + "\" AND date between  \"" + date + "\" - 365 AND \"" + date + "\" GROUP BY MONTHNAME(date), YEAR(date);"
     #print "\ncommand = " + str(command) + "\n"
     cursor.execute(command)
     ret = {}
@@ -79,7 +79,7 @@ def localAreaSummary(req, db):
     date = req["date"]
     ip = req["ip"]
     cursor = db.cursor()
-    command = "select * from dailysummary WHERE id=" + clientId + " AND DATE=\"" + date + "\";"
+    command = "select * from dailysummary WHERE id=\"" + clientId + "\" AND DATE=\"" + date + "\";"
     cursor.execute(command)
     client_summary = cursor.fetchone()
     client_summary["date"] = client_summary["date"].__str__()

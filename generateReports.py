@@ -25,8 +25,6 @@ def displayGraph(data,result):
     try:
         global html
         print "RESULT in displayGraph():", result
-        del result['Message']
-        del result['StatusCode']
 
         #Create the HTML file for output
         htmlReportPath = os.path.dirname(os.path.realpath(__file__))
@@ -36,6 +34,9 @@ def displayGraph(data,result):
     ##    print "********************"
 
         if(len(result) > 2):
+            del result['Message']
+            del result['StatusCode']
+
             if(data['duration'] == "dailyall"):
                 reportName = "Summary for today: " + data['date']
     ##                bpList = (result['bp']).split("/")
@@ -236,7 +237,7 @@ def displayGraph(data,result):
                 htmlChartSection = """
                 <!-- Chart code -->
                 <script>
-                var chart = AmCharts.makeChart("chartdiv", {
+                    var chart = AmCharts.makeChart("chartdiv", {
                     "theme": "none",
                     "type": "serial",
                 	"startDuration": 2,
@@ -392,6 +393,9 @@ def displayGraph(data,result):
                 htmlReportFp.write(htmlChartSection)
                 htmlReportFp.write(htmlHeadSection)
                 htmlReportFp.write(htmlBodySectionForCharts)
+
+            elif(data['duration'] == "localAreaSummary"):
+                print "*****************************"
 
     		# print results to shell
             print "Created html report"
