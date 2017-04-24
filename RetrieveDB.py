@@ -4,7 +4,7 @@ def dailyAll(req, db):
     cursor = db.cursor()
     #select * from hourlysummary where id=2222222222 AND DATE(dateTime)="2017-04-03";
     command = "select * from dailysummary WHERE id=\"" + clientId + "\" AND DATE=\"" + date + "\";"
-    #print "command = " + str(command) + "\n"
+    print "command = " + str(command) + "\n"
     cursor.execute(command)
     ret = cursor.fetchone()
     '''
@@ -13,7 +13,10 @@ def dailyAll(req, db):
         print row
         row = cursor.fetchone()
     '''
-    ret["date"] = ret["date"].__str__()
+    if ret is not None:
+    	ret["date"] = ret["date"].__str__()
+    if ret == None:
+	ret = {}
     return ret
     
 def daily(req, db):
@@ -29,6 +32,8 @@ def daily(req, db):
     while row is not None:
         ret[ row["HOUR(dateTime)"].__str__() ] = row[item]
         row = cursor.fetchone()
+    if ret == None:
+	ret = {}
     return ret
 
 def weekly(req, db):
@@ -45,6 +50,8 @@ def weekly(req, db):
     while row is not None:
         ret[ row["DATE"].__str__() ] = row[item]
         row = cursor.fetchone()
+    if ret == None:
+	ret = {}
     return ret
     
 def monthly(req, db):
@@ -72,6 +79,8 @@ def yearly(req, db):
         #print month, year, month_year, "\n"
         ret[ month_year ] = row[operation + "(" + item + ")"]
         row = cursor.fetchone()
+    if ret == None:
+	ret = {}
     return ret
 
 def localAreaSummary(req, db):
@@ -82,14 +91,18 @@ def localAreaSummary(req, db):
     command = "select * from dailysummary WHERE id=\"" + clientId + "\" AND DATE=\"" + date + "\";"
     cursor.execute(command)
     client_summary = cursor.fetchone()
-    client_summary["date"] = client_summary["date"].__str__()
+    if client_summary is not None:
+        client_summary["date"] = client_summary["date"].__str__()
     
     command = "select * from localsummary WHERE ip=\"" + ip + "\" AND DATE=\"" + date + "\";"
     #print "\ncommand = " + str(command) + "\n"
     cursor.execute(command)
     localAreaSummary = cursor.fetchone()
-    localAreaSummary["date"] = localAreaSummary["date"].__str__()
+    if localAreaSummary is not None:
+        localAreaSummary["date"] = localAreaSummary["date"].__str__()
     ret = {}
     ret["localAreaSummary"] = localAreaSummary
     ret["client_summary"] = client_summary
+    if ret == None:
+	ret = {}
     return ret
