@@ -263,7 +263,7 @@ def checkSendDataToCloud():
 		return False
 
 
-def serverInteraction(map):
+def cloudServerInteraction(map):
 	response = ""
 	i = 0
 	while i < 5:
@@ -271,7 +271,7 @@ def serverInteraction(map):
 			jsonData = json.dumps(map)
 			print "JSON DATA: ",jsonData
 
-			url = 'http://52.41.73.23:5000/pushdata'
+			url = 'http://34.223.200.168/pushdata'
 			response = requests.post(url, data=jsonData, headers={"Content-Type":"application/json"})
 			response = response.json()
 
@@ -301,7 +301,7 @@ def mypost():
 			if checkSendDataToCloud():
 				print "Hi"
 				dic = edge.getServerData()
-				serverInteraction(dic)
+				cloudServerInteraction(dic)
 			edge.checkResetData()
 			return response
 	
@@ -313,12 +313,23 @@ def mypost():
 
 
 
-
+'''
 if __name__ == '__main__':
 	app.run(
 		host='0.0.0.0',		#Imp to open app to world
 		port='5000',
 		debug = False)
-
+'''
 # When running this code on a machine, make sure you are allowing traffic to port 5000, cmd to do the same:
 # iptables -I INPUT -p tcp --dport 5000 -j ACCEPT
+#source env/bin/activate
+#gunicorn edge_server:app
+'''
+virtualenv env
+source env/bin/activate
+pip install flask
+pip install gunicorn
+which gunicorn
+
+gunicorn hello:app
+'''

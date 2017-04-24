@@ -4,34 +4,49 @@ import datetime
 import requests
 import json
 import subprocess
+import sys
 
 class MyData():
-	def __init__(self):
+	def __init__(self, index):
+
+		self.clientId = self.getClientID(index)
 		self.clientId = str(randint(0,9)) + str(randint(0,9)) + str(randint(0,9)) + str(randint(0,9)) + str(randint(0,9))+ str(randint(0,9))+ str(randint(0,9)) + str(randint(0,9))+ str(randint(0,9))+ str(randint(0,9))
 		self.lat = getCurrentLat()						
 		self.long = getCurrentLong()
 		self.edgemap = {"8.8.8.8", "www.facebook.com", "www.youtube.com"}
 
 
+	def getClientID(self, index):
+		i = 0
+		with open("clientIds.txt") as id:
+			if i == index:
+				return id
+			i +=1
+
+
 def serverInteraction(map):
 	response = ""
 	i = 0
-	while i < 5:
-		if len(map) != 0:
-			jsonData = json.dumps(map)
-			print "JSON DATA: ",jsonData
+	try:
+		while i < 5:
+			if len(map) != 0:
+				jsonData = json.dumps(map)
+				print "JSON DATA: ",jsonData
 
-			url = 'http://10.0.0.237:5000/pushSecondsData'
-			response = requests.post(url, data=jsonData, headers={"Content-Type":"application/json"})
-			response = response.json()
+				url = 'http://52.38.209.208/pushSecondsData'
+				response = requests.post(url, data=jsonData, headers={"Content-Type":"application/json"})
+				#response = response
 
-			print "Response: ", response
-			if response['StatusCode'] == '200':
-				break
-			i += 1 
-			print "Server status not 200"
-		else:
-			break;
+				print "Response: ", str(response)
+				if "200" in str(response):
+					break
+				i += 1 
+				print "Server didn't respond. Retrying..."
+				time.sleep(1)
+			else:
+				break;
+	except Exception as e:
+		print "Error in sendData", str(e)
 
 
 def sendData(time, data, clientId):
@@ -82,7 +97,7 @@ def getIp(ipMap):
 
 if __name__ == '__main__':
 	i = 0
-	me = MyData()
+	me = MyData(str(sys.argv[0]))
 	#ip = getIp(me.edgemap)
 	#print ip
 
@@ -104,7 +119,7 @@ if __name__ == '__main__':
 		except Exception as e:
 			print "Retrying..."
 
-		print "data sent", i
+		#print "data sent", i
 		i +=1
 		
 		if i > 95 :						#bcos we have just 96 lines in our dataset
