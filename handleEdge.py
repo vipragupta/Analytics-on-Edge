@@ -35,7 +35,7 @@ def getreport():#from client
     req = request.json
     req = {	
             "clientId": "2222222222",
-            "duration": "localAreaSummary",
+            "duration": "yearly",
             "date": "2017-04-03",
             "type" : "pulse",
             "ip" : "0.0.0.0"

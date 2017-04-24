@@ -59,14 +59,18 @@ def yearly(req, db):
     if item == "pulse":
         operation = "AVG"
     #select distinct calories, Date from dailysummary  WHERE Date BETWEEN "2017-04-03"-7 AND "2017-04-03" order by Date ASC;
-    command = "SELECT " + operation + "("+ item + "),  MONTHNAME(date)  FROM dailysummary WHERE date between  \"" + date + "\" - 365 AND \"" + date + "\" GROUP BY (MONTHNAME(date));"
+    command = "SELECT " + operation + "("+ item + "),  MONTHNAME(date) , YEAR(date)  FROM dailysummary WHERE date between  \"" + date + "\" - 365 AND \"" + date + "\" GROUP BY MONTHNAME(date), YEAR(date);"
     #print "\ncommand = " + str(command) + "\n"
     cursor.execute(command)
     ret = {}
     row = cursor.fetchone()
     #print "\n", str(row.keys()), "\n"
     while row is not None:
-        ret[ row["MONTHNAME(date)"].__str__() ] = row[operation + "(" + item + ")"]
+        month = row["MONTHNAME(date)"].__str__()
+        year = row["YEAR(date)"].__str__()
+        month_year = month + "_" + year
+        #print month, year, month_year, "\n"
+        ret[ month_year ] = row[operation + "(" + item + ")"]
         row = cursor.fetchone()
     return ret
 
