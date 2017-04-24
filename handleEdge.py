@@ -2,6 +2,9 @@ from flask import Flask, jsonify, request
 from flaskext.mysql import MySQL
 import datetime
 from ReplaceDB import handleHourly, clientSummary, localSummary
+from RetrieveDB import dailyAll, daily, weekly, monthly, yearly, localAreaSummary
+from pymysql.cursors import DictCursor
+import json 
 
 mysql = MySQL()
 app = Flask(__name__)
@@ -12,7 +15,7 @@ app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'Abcd@1234'
 app.config['MYSQL_DATABASE_DB'] = 'analytics'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-mysql = MySQL(app)
+mysql = MySQL(app, cursorclass=DictCursor)
 db = mysql.connect()
 
 @app.route('/pushdata', methods=['GET', 'POST'])
@@ -26,23 +29,43 @@ def pushdata():#from edge server
         clientSummary(req["clientSummary"], db)
     if( "localSummary" in req ):
         localSummary(req["localSummary"], db)
-    return jsonify({'StatusCode':'200','Message': 'User creation success'})
+    return jsonify({'StatusCode':'200','Message': 'Database addition/replacement success'})
 
 
-'''
+
 @app.route('/getreport', methods=['GET', 'POST'])
 def getreport():#from client
-    cursor = db.cursor()
-    command = "INSERT INTO hourlydata (id, dateTime, steps, distance, elevation, calories, floors, pulse, activemins, bp) VALUES (\"1\", \""
-    command += str(datetime.time())
-    command += "\", 10, 1.2, 21.1, 21.1, 1, 13, 312, \"3424\")"
-    #print command
-    cursor.execute(command)
-    vals = cursor.execute(\'''SELECT * from hourlydata\''')
-    print vals
-    db.commit()
-    return jsonify({'StatusCode':'200','Message': 'User creation success'})
-'''
+    req = request.json
+    req = {	
+            "clientId": "2222222222",
+	    "duration": "daily",
+	    "date": "2017-04-03",
+            "type" : "calories"
+        }
+    if "duration" not in req:
+        print "duration not in req"
+        return jsonify({'StatusCode':'400','Message': 'Invalid request, please provide duration, clientid, time and other details'})
+    
+    duration = req["duration"]
+    print "duration = " + str(duration) + "\n"
+    if(duration == "dailyall"):
+        ret = dailyAll(req, db)
+        return json.dumps(ret)
+    
+    elif(duration == "daily"):
+        ret = daily(req, db)
+        return json.dumps(ret)
+    '''
+    elif(duration == "weekly"):
+        #do something
+    elif(duration == "monthly"):
+        #do something
+    elif(duration == "yearly"):
+        #do something
+    elif(duration == "localAreaSummary"):
+        #do something
+    '''
+    return jsonify({'StatusCode':'200','Message': 'Database addition/replacement success'})
 
 if __name__ == '__main__':
     app.run(debug=True)
