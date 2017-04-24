@@ -38,8 +38,8 @@ def getreport():#from client
     req = request.json
     req = {	
             "clientId": "2222222222",
-	    "duration": "daily",
-	    "date": "2017-04-03",
+            "duration": "weekly",
+            "date": "2017-04-03",
             "type" : "calories"
         }
     if "duration" not in req:
@@ -50,14 +50,21 @@ def getreport():#from client
     print "duration = " + str(duration) + "\n"
     if(duration == "dailyall"):
         ret = dailyAll(req, db)
+        ret['StatusCode'] = 200
+        ret['Message'] = 'Summary data retrieved'
         return json.dumps(ret)
-    
     elif(duration == "daily"):
         ret = daily(req, db)
+        ret['StatusCode'] = 200
+        ret['Message'] = 'Hourly data retrieved'
+        return json.dumps(ret)
+    elif(duration == "weekly"):
+        ret = weekly(req, db)
+        print ret
+        ret['StatusCode'] = 200
+        ret['Message'] = 'Daily data retrieved'
         return json.dumps(ret)
     '''
-    elif(duration == "weekly"):
-        #do something
     elif(duration == "monthly"):
         #do something
     elif(duration == "yearly"):
