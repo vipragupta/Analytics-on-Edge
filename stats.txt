@@ -1,0 +1,12 @@
+edge on ec2
+	1GB RAM
+	40 fitbit clients 
+	--> 10-12% CPU usage
+
+
+Even if we use storm, it requires a powerful machines.
+	For example when we were running our storm on a 1GB RAM machine, 
+	and were running a a spout to read 377MB file.
+	our CPU was going in more than 70% performance for 3 million lines.
+
+	So same way you can run storm instances on edge.
