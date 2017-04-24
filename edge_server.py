@@ -11,11 +11,6 @@ import json
 import ast
 
 app = Flask(__name__)
-app.config.update(
-    DEBUG=True,
-    SERVER_NAME='10.0.0.237:5000'
-)
-api = Api (app)
 
 
 class Edge():
@@ -242,6 +237,8 @@ class Edge():
 
 edge = Edge()
 
+
+#only for testing
 def extractData():
 	map = {}
 	clientId = ["8745274174", "8674587532", "7946547861"]
@@ -253,11 +250,11 @@ def extractData():
 	now = datetime.now()
 	map["time"]	= str(now)
 
-	return map 			#TODO
+	return map
 
 
 def checkSendDataToCloud():
-
+	return False
 	now = datetime.now()
 	datetm = datetime.strptime(str(now), "%Y-%m-%d %H:%M:%S.%f")
 	if datetm.minute == 00 or datetm.minute == 30:		#Reset all data at 00:05
@@ -318,4 +315,10 @@ def mypost():
 
 
 if __name__ == '__main__':
-	app.run(debug=True, host='0.0.0.0')
+	app.run(
+		host='0.0.0.0',		#Imp to open app to world
+		port='5000',
+		debug = False)
+
+# When running this code on a machine, make sure you are allowing traffic to port 5000, cmd to do the same:
+# iptables -I INPUT -p tcp --dport 5000 -j ACCEPT
