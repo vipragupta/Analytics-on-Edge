@@ -5,17 +5,21 @@ def handleHourly(req, db):
         data = req[i]
         date = data.get("date")
         hr = data.get("hour")
+        if date == None or hr == None:
+            return
         dateTime = date + " " + str(hr) + ":00:00"
         steps = data.get("steps")
         elevation = data.get("elevation")
         distance = data.get("distance")
         floors = data.get("floors")
         bp = data.get("bp")
-        steps = data.get("steps")
         pulse = data.get("pulse")
         calories = data.get("calories")
         activemins = data.get("active")
         
+        if client == None or date == None or hr == None or steps == None or elevation == None or distance == None or floors == None or bp == None or pulse == None or calories == None or activemins == None:
+                return
+
         command = "REPLACE INTO hourlysummary (id, dateTime, steps, distance, elevation, calories, floors, pulse, activemins, bp) VALUES (\"" 
         command += client + "\", \""
         command += str(dateTime) + "\", "
@@ -46,6 +50,9 @@ def clientSummary(req, db):
         calories = data.get("calories")
         activemins = data.get("active")
         
+        if client == None or date == None or steps == None or elevation == None or distance == None or floors == None or bp == None or pulse == None or calories == None or activemins == None:
+            return
+
         command = "REPLACE INTO dailysummary (id, date, steps, distance, elevation, calories, floors, pulse, activemins, bp) VALUES (\"" 
         command += client + "\", "
         command += "\"" + date + "\", "
@@ -73,6 +80,9 @@ def localSummary(req, db):
     pulse = req.get("pulse")
     calories = req.get("calories")
     activemins = req.get("active")
+
+    if ip == None or date == None or steps == None or elevation == None or distance == None or floors == None or bp == None or pulse == None or calories == None or activemins == None:
+        return
 
     command = "REPLACE INTO localsummary (ip, date, steps, distance, elevation, calories, floors, pulse, activemins, bp) VALUES (\"" 
     command +=  ip + "\", "
