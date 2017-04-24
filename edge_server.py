@@ -6,9 +6,15 @@ from random import randint
 from flask import Flask, jsonify, request
 from flask_restful import Resource, Api
 import json
+import requests
+import json
 import ast
 
 app = Flask(__name__)
+app.config.update(
+    DEBUG=True,
+    SERVER_NAME='10.0.0.237:5000'
+)
 api = Api (app)
 
 
@@ -230,6 +236,7 @@ class Edge():
 				client[clientId] = clientMap
 
 		finalList["hourly"] = client
+		finalList["edge_ip"] = self.ip
 		#print finalList
 		return finalList
 
@@ -250,6 +257,7 @@ def extractData():
 
 
 def checkSendDataToCloud():
+
 	now = datetime.now()
 	datetm = datetime.strptime(str(now), "%Y-%m-%d %H:%M:%S.%f")
 	if datetm.minute == 00 or datetm.minute == 30:		#Reset all data at 00:05
@@ -266,7 +274,7 @@ def serverInteraction(map):
 			jsonData = json.dumps(map)
 			print "JSON DATA: ",jsonData
 
-			url = 'http://127.0.0.1:5000/pushdata'
+			url = 'http://52.41.73.23:5000/pushdata'
 			response = requests.post(url, data=jsonData, headers={"Content-Type":"application/json"})
 			response = response.json()
 
@@ -294,7 +302,9 @@ def mypost():
 			response = json.dumps(response)
 
 			if checkSendDataToCloud():
+				print "Hi"
 				dic = edge.getServerData()
+				serverInteraction(dic)
 			edge.checkResetData()
 			return response
 	
@@ -308,4 +318,4 @@ def mypost():
 
 
 if __name__ == '__main__':
-	app.run(debug=True)
+	app.run(debug=True, host='0.0.0.0')

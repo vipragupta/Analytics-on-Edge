@@ -1,7 +1,6 @@
 from random import randint
 import time
 import datetime
-import socket
 import requests
 import json
 import subprocess
@@ -22,7 +21,7 @@ def serverInteraction(map):
 			jsonData = json.dumps(map)
 			print "JSON DATA: ",jsonData
 
-			url = 'http://127.0.0.1:5000/pushSecondsData'
+			url = 'http://10.0.0.237:5000/pushSecondsData'
 			response = requests.post(url, data=jsonData, headers={"Content-Type":"application/json"})
 			response = response.json()
 
