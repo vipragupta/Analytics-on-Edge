@@ -33,11 +33,11 @@ def serverInteraction(map):
 				jsonData = json.dumps(map)
 				print "JSON DATA: ",jsonData
 
-				url = 'http://52.38.209.208/pushSecondsData'
+				url = 'http://10.0.0.237:5000/pushSecondsData'
 				response = requests.post(url, data=jsonData, headers={"Content-Type":"application/json"})
 				#response = response
 
-				print "Response: ", str(response)
+				print str(response)
 				if "200" in str(response):
 					break
 				i += 1
