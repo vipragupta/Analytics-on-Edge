@@ -24,7 +24,9 @@ def mypost():
             print "Request: " + str(request)
             print request.json
 
-            response = {u'distance': '3.4', u'elevation': '2.1', u'activemins': '23.0', u'calories': '14131.0', u'pulse': u'98', u'floors': '1.3', u'steps': '123456', u'date': '2017-04-03', u'bp': '123/78', u'id': u'2222222222'}
+            response = {"Message": "Hourly data retrieved", "3": 14131.0, "4": 413.0, "StatusCode": 200}
+            #response =  {"Message": "Daily data retrieved", "2017-04-02": 14132.0, "2017-04-03": 14131.0, "StatusCode": 200}
+            #response = {u'distance': '3.4', u'elevation': '2.1', u'activemins': '23.0', u'calories': '14131.0', u'pulse': u'98', u'floors': '1.3', u'steps': '123456', u'date': '2017-04-03', u'bp': '123/78', u'id': u'2222222222'}
             response = json.dumps(response)
             return response
 

@@ -20,6 +20,10 @@ import datetime
 def displayGraph(data,result):
     global html
     print result
+    del result['Message']
+    del result['StatusCode']
+    keys = result.keys()
+    print keys
     #Create the HTML file for output
     htmlReportPath = os.path.dirname(os.path.realpath(__file__))
     htmlReportPath = os.path.join(htmlReportPath,"report.html")
@@ -33,7 +37,6 @@ def displayGraph(data,result):
 
         elif(data['duration'] == "daily"):
             reportName = "Hourly statistics of " + data['type'] + " for " + data['date']
-
 
 
         #write html document
@@ -51,7 +54,69 @@ def displayGraph(data,result):
             <link rel="stylesheet" href="dailyAll.css" type="text/css"/>
         """
 
-        htmlChartSection = """
+        htmlHeadSection = """
+        <head>
+			<title>Report</title>
+		</head>
+        """
+
+        if(data['duration'] == "dailyall"):
+            htmlBodySectionForDailyAll = """
+                <body>
+                    <header>
+                        <h1 class="heading">Report: """ + reportName + """</h1>
+                    </header>
+                    <table class="table-fill">
+                        <thead>
+                            <tr>
+                                <th class="text-left">Activities</th>
+                                <th class="text-left">Values</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-hover">
+                            <tr>
+                                <td class="text-left">Distance</td>
+                                <td class="text-left">""" + result['distance'] + """</td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">Elevation</td>
+                                <td class="text-left">""" + result['elevation'] + """</td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">Active Minutes</td>
+                                <td class="text-left">""" + result['activemins'] + """</td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">Calories</td>
+                                <td class="text-left">""" + result['calories'] + """</td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">Pulse</td>
+                                <td class="text-left">""" + result['pulse'] + """</td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">Floors</td>
+                                <td class="text-left">""" + result['floors'] + """</td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">Steps</td>
+                                <td class="text-left">""" + result['steps'] + """</td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">Blood Pressure</td>
+                                <td class="text-left">""" + result['bp'] + """</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </body>
+                </html>
+        		"""
+            htmlReportFp.write(htmlResourcesSection)
+            htmlReportFp.write(htmlHeadSection)
+            htmlReportFp.write(htmlBodySectionForDailyAll)
+
+        elif(data['duration'] == "daily"):
+            htmlChartSection = """
             <!-- Chart code -->
             <script>
             var chart = AmCharts.makeChart("chartdiv", {
@@ -130,11 +195,7 @@ def displayGraph(data,result):
             </script>
         """
 
-        htmlHeadSection = """
-        <head>
-			<title>Report</title>
-		</head>
-        """
+
 
         htmlBodySectionForCharts = """
 		<body class="main">
@@ -145,66 +206,8 @@ def displayGraph(data,result):
         </body>
         </html>
 		"""
-
-        htmlBodySectionForDailyAll = """
-        <body>
-            <header>
-                <h1 class="heading">Report: """ + reportName + """</h1>
-            </header>
-            <table class="table-fill">
-                <thead>
-                    <tr>
-                        <th class="text-left">Activities</th>
-                        <th class="text-left">Values</th>
-                    </tr>
-                </thead>
-                <tbody class="table-hover">
-                    <tr>
-                        <td class="text-left">Distance</td>
-                        <td class="text-left">""" + result['distance'] + """</td>
-                    </tr>
-                    <tr>
-                        <td class="text-left">Elevation</td>
-                        <td class="text-left">""" + result['elevation'] + """</td>
-                    </tr>
-                    <tr>
-                        <td class="text-left">Active Minutes</td>
-                        <td class="text-left">""" + result['activemins'] + """</td>
-                    </tr>
-                    <tr>
-                        <td class="text-left">Calories</td>
-                        <td class="text-left">""" + result['calories'] + """</td>
-                    </tr>
-                    <tr>
-                        <td class="text-left">Pulse</td>
-                        <td class="text-left">""" + result['pulse'] + """</td>
-                    </tr>
-                    <tr>
-                        <td class="text-left">Floors</td>
-                        <td class="text-left">""" + result['floors'] + """</td>
-                    </tr>
-                    <tr>
-                        <td class="text-left">Steps</td>
-                        <td class="text-left">""" + result['steps'] + """</td>
-                    </tr>
-                    <tr>
-                        <td class="text-left">Blood Pressure</td>
-                        <td class="text-left">""" + result['bp'] + """</td>
-                    </tr>
-                </tbody>
-            </table>
-        </body>
-        </html>
-		"""
-
-
-        if(data['duration'] == "dailyall"):
-            htmlReportFp.write(htmlResourcesSection)
-            htmlReportFp.write(htmlHeadSection)
-            htmlReportFp.write(htmlBodySectionForDailyAll)
-
-        #htmlReportFp.write(htmlChartSection)
-        #htmlReportFp.write(htmlBodySectionForCharts)
+            #htmlReportFp.write(htmlChartSection)
+            #htmlReportFp.write(htmlBodySectionForCharts)
 
 		# print results to shell
         print "Created html report"

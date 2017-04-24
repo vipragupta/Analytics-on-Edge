@@ -70,8 +70,18 @@ def createJsonData(graphMenuChoice, durationMenuChoice, clientId):
     url = 'http://localhost:5000/post'
     response = requests.post(url, data=jsonData, headers={"Content-Type":"application/json"})
     response = response.json()
-    #print response
-    displayGraph(data,response)
+    print response
+    del response['Message']
+    del response['StatusCode']
+    dummy = response.keys()
+    keys = []
+    for i in dummy:
+        keys.append(int(i))
+
+    keys.sort()
+    print keys()
+
+    #displayGraph(data,response)
 
 
 #------------------------------------MAIN---------------------------------------
