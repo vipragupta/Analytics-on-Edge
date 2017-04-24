@@ -254,7 +254,7 @@ def extractData():
 
 
 def checkSendDataToCloud():
-	return False
+	return True
 	now = datetime.now()
 	datetm = datetime.strptime(str(now), "%Y-%m-%d %H:%M:%S.%f")
 	if datetm.minute == 00 or datetm.minute == 30:		#Reset all data at 00:05
@@ -297,7 +297,7 @@ def mypost():
 			edge.printDic()
 			response = {'StatusCode':'200','Message':'Success'}
 			response = json.dumps(response)
-
+			time.sleep(2)
 			if checkSendDataToCloud():
 				print "Hi"
 				dic = edge.getServerData()

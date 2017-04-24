@@ -40,7 +40,8 @@ def serverInteraction(map):
 				print "Response: ", str(response)
 				if "200" in str(response):
 					break
-				i += 1 
+				i += 1
+				print
 				print "Server didn't respond. Retrying..."
 				time.sleep(1)
 			else:
