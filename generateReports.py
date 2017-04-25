@@ -39,81 +39,75 @@ def displayGraph(data,result):
             del result['Message']
             del result['StatusCode']
 
-            if("duration" in data.keys()):
+            if(data['duration'] == "dailyall"):
+                reportName = "Summary for today: " + data['date']
+                htmlBodySectionForDailyAll = htmlBodyForDailyAll(reportName, result)
+                htmlReportFp.write(htmlResourcesSection)
+                htmlReportFp.write(htmlHeadSection)
+                htmlReportFp.write(htmlBodySectionForDailyAll)
 
-                if(data['duration'] == "dailyall"):
-                    reportName = "Summary for today: " + data['date']
-                    htmlBodySectionForDailyAll = htmlBodyForDailyAll(reportName, result)
-                    htmlReportFp.write(htmlResourcesSection)
-                    htmlReportFp.write(htmlHeadSection)
-                    htmlReportFp.write(htmlBodySectionForDailyAll)
+            elif(data['duration'] == "daily"):
+                if (len(result) > 0):
+                    temp = result.keys()
+                    keys = []
+                    for i in temp:
+                        keys.append(int(i))
+                    keys.sort()
+                reportName = "Hourly statistics of " + data['type'].upper() + " for " + data['date']
 
-                elif(data['duration'] == "daily"):
-                    if (len(result) > 0):
-                        temp = result.keys()
-                        keys = []
-                        for i in temp:
-                            keys.append(int(i))
-                        keys.sort()
-                    reportName = "Hourly statistics of " + data['type'].upper() + " for " + data['date']
+                htmlChartSection = htmlChartHourly(keys, result)
+                htmlBodySectionForCharts = htmlBodyChart(reportName)
+                htmlReportFp.write(htmlResourcesSection)
+                htmlReportFp.write(htmlChartSection)
+                htmlReportFp.write(htmlHeadSection)
+                htmlReportFp.write(htmlBodySectionForCharts)
 
-                    htmlChartSection = htmlChartHourly(keys, result)
-                    htmlBodySectionForCharts = htmlBodyChart(reportName)
-                    htmlReportFp.write(htmlResourcesSection)
-                    htmlReportFp.write(htmlChartSection)
-                    htmlReportFp.write(htmlHeadSection)
-                    htmlReportFp.write(htmlBodySectionForCharts)
+            elif(data['duration'] == "weekly"):
+                if(len(result) > 0):
+                    temp = result.keys()
+                    keys = []
+                    for i in temp:
+                        keys.append(str(i))
+                    keys.sort()
+                weekday = {}
+                for each_date in keys:
+                    datee = dparser.parse(each_date,fuzzy=True)
+                    day = calendar.day_name[datee.date().weekday()]
+                    weekday[each_date] = day
+                reportName = "Statistics of " + data['type'].upper() + " for the duration:  " + str(keys[0]) + "  to  " + str(keys[len(keys)-1])
 
-                elif(data['duration'] == "weekly"):
-                    if(len(result) > 0):
-                        temp = result.keys()
-                        keys = []
-                        for i in temp:
-                            keys.append(str(i))
-                        keys.sort()
-                    weekday = {}
-                    for each_date in keys:
-                        datee = dparser.parse(each_date,fuzzy=True)
-                        day = calendar.day_name[datee.date().weekday()]
-                        weekday[each_date] = day
-                    reportName = "Statistics of " + data['type'].upper() + " for the duration:  " + str(keys[0]) + "  to  " + str(keys[len(keys)-1])
-
-                    htmlChartSection = htmlChartWeekly(keys,weekday,result)
-                    htmlBodySectionForCharts = htmlBodyChart(reportName)
-                    htmlReportFp.write(htmlResourcesSection)
-                    htmlReportFp.write(htmlChartSection)
-                    htmlReportFp.write(htmlHeadSection)
-                    htmlReportFp.write(htmlBodySectionForCharts)
+                htmlChartSection = htmlChartWeekly(keys,weekday,result)
+                htmlBodySectionForCharts = htmlBodyChart(reportName)
+                htmlReportFp.write(htmlResourcesSection)
+                htmlReportFp.write(htmlChartSection)
+                htmlReportFp.write(htmlHeadSection)
+                htmlReportFp.write(htmlBodySectionForCharts)
 
 
-                elif(data['duration'] == "yearly"):
-                    if (len(result) > 0):
-                        temp = result.keys()
-                        keys = []
-                        for i in temp:
-                            keys.append(str(i))
-                    year = data['date'].split('-')[0]
-                    reportName = "Statistics of " + data['type'].upper() + " for the duration: " + str(int(year)-1) + " - " + str(year)
+            elif(data['duration'] == "yearly"):
+                if (len(result) > 0):
+                    temp = result.keys()
+                    keys = []
+                    for i in temp:
+                        keys.append(str(i))
+                year = data['date'].split('-')[0]
+                reportName = "Statistics of " + data['type'].upper() + " for the duration: " + str(int(year)-1) + " - " + str(year)
 
-                    htmlChartSection = htmlChartYearly(keys,result)
-                    htmlBodySectionForCharts = htmlBodyYearly(reportName)
-                    htmlReportFp.write(htmlResourcesSection)
-                    htmlReportFp.write(htmlChartSection)
-                    htmlReportFp.write(htmlHeadSection)
-                    htmlReportFp.write(htmlBodySectionForCharts)
+                htmlChartSection = htmlChartYearly(keys,result)
+                htmlBodySectionForCharts = htmlBodyYearly(reportName)
+                htmlReportFp.write(htmlResourcesSection)
+                htmlReportFp.write(htmlChartSection)
+                htmlReportFp.write(htmlHeadSection)
+                htmlReportFp.write(htmlBodySectionForCharts)
 
-                elif(data['duration'] == 'localAreaSummary'):
-                    reportName = "Comparison of your performace with other Fitbit users in your area. Date: " + data['date']
-                    htmlChartSection = htmlChartLocalArea(result)
-                    htmlBodySectionForCharts = htmlBodyChart(reportName)
-                    htmlReportFp.write(htmlResourcesSection)
-                    htmlReportFp.write(htmlChartSection)
-                    htmlReportFp.write(htmlHeadSection)
-                    htmlReportFp.write(htmlBodySectionForCharts)
-
-            else:
-                print "Invalid response. Database processing error"
-                sys.exit("Key Error")
+            elif(data['duration'] == 'localAreaSummary'):
+                reportName = "Comparison of your performace with other Fitbit users in your area. Date: " + data['date']
+                htmlChartSection = htmlChartLocalArea(result)
+                htmlBodySectionForCharts = htmlBodyChart(reportName)
+                htmlReportFp.write(htmlResourcesSection)
+                htmlReportFp.write(htmlChartSection)
+                htmlReportFp.write(htmlHeadSection)
+                htmlReportFp.write(htmlBodySectionForCharts)
 
         else:
             print "No data found for the given duration!"
