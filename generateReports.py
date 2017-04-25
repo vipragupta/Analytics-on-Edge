@@ -20,11 +20,12 @@ import calendar
 
 colors = ["#FF0F00","#FF6600","#FF9E01","#FCD202","#F8FF01","#B0DE09","#04D215","#92f3aa","#4debc4","#0D8ECF","#36b3f2","#36e2f2","#0D52D1","#2A0CD0","#8A0CCF","#CD0D74","#754DEB","#8764ee","#997bf0","#aa92f3","#4dc3eb","#92daf3","#DDDDDD","#999999","#333333","#000000"]
 
+
+
 #-------------------Generate Graph and create HTML Report-----------------------
 def displayGraph(data,result):
     try:
         global html
-        #print "RESULT in displayGraph():", result
 
         #Create the HTML file for output
         htmlReportPath = os.path.dirname(os.path.realpath(__file__))
@@ -111,7 +112,7 @@ def displayGraph(data,result):
                     htmlReportFp.write(htmlBodySectionForCharts)
 
             else:
-                print "Duration key error. Exiting the application"
+                print "Invalid response. Database processing error"
                 sys.exit("Key Error")
 
         else:

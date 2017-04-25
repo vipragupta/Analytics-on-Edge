@@ -22,14 +22,44 @@ import timeit
 graphMenuDict = {1:"distance", 2:"elevation", 3:"calories", 4:"pulse", 5:"floors", 6:"bp", 7:"steps"}
 durationMenuDict = {0:"dailyall",1:"daily", 2:"weekly", 3:"yearly",4:"localAreaSummary"}
 todayDate = str(datetime.datetime.now().date())
+l = []
 
-#----------------------------------userMenu-------------------------------------
+
+#-----------------------------GET NEAREST EDGE IP-------------------------------
+#{"128.138.201.67", "10.0.0.237"}
+def getEdgeIp(ipMap):
+	minHops = 9999
+	minIp = ""
+
+	for ip in ipMap:
+	    command = "traceroute " + ip
+	    print "IP: ", ip
+	    traceroute = subprocess.Popen(["traceroute", '-w', '100',ip],stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+	    for line in iter(traceroute.stdout.readline,""):
+	        str = line
+
+	    print str
+	    index = str.index(' ')
+	    str = str[0:index]
+
+	    if minHops > int(str):
+	    	minHops = int(str)
+	    	minIp = ip
+
+	return minIp
+
+
+
+
+#----------------------------------USER MENU------------------------------------
 def userMenu(clientId):
     try:
         mainMenu = "======USER MENU======\n1. View Today's summary\n2. Generate Graphs\n3. Compare your performace with peers in your area?\n4. Close the Application\n"
         print mainMenu
         print "Enter your choice: "
         mainMenuChoice = int(input())
+        #mainMenuChoice = 1
 
         if(mainMenuChoice == 1):
             createJsonData(mainMenuChoice, 0, clientId, 0)
@@ -63,7 +93,9 @@ def userMenu(clientId):
 		print comment
 		return 0
 
-#--------------------------------createJSONData---------------------------------
+
+
+#---------------------------CREATE JSON DATA------------------------------------
 def createJsonData(graphMenuChoice, durationMenuChoice, clientId, edgeIp):
     if(durationMenuChoice == 0):
         data = {'clientId':clientId,'duration':durationMenuDict[durationMenuChoice],"date":todayDate}
@@ -79,7 +111,13 @@ def createJsonData(graphMenuChoice, durationMenuChoice, clientId, edgeIp):
 
     #url = 'http://localhost:5000/post'
     url = 'http://34.223.200.168/getreport'
+
+    start = timeit.default_timer()
     response = requests.post(url, data=jsonData, headers={"Content-Type":"application/json"},timeout = 10)
+    end = timeit.default_timer()
+
+    l.append(end-start)
+
     print response.json()
 
     if "200" in str(response):
@@ -90,6 +128,10 @@ def createJsonData(graphMenuChoice, durationMenuChoice, clientId, edgeIp):
         print str(response)
         print "Exiting the application!"
 
+
+
+
+#-----------------------------ENTER CLIENT ID-----------------------------------
 def enterClientId():
     clientId = str(raw_input("Please enter your ID: "))
     f = open('clientIds.txt', 'r')
@@ -101,10 +143,18 @@ def enterClientId():
     print "Invalid Client ID! Please enter a valid ID!"
     return (None)
 
+
+
+
 #------------------------------------MAIN---------------------------------------
 if __name__ == '__main__':
     clientId = None
     while(clientId == None):
         clientId = enterClientId()
 
-    #userMenu(clientId)
+    userMenu(clientId)
+##    for i in range(500):
+##        clientId = "0000000000"
+##        userMenu(clientId)
+##
+##    print "sum: ", sum(l)
