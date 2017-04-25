@@ -54,39 +54,45 @@ def getEdgeIp(ipMap):
 
 #----------------------------------USER MENU------------------------------------
 def userMenu(clientId):
+    mainMenuChoice = 0
     try:
-        mainMenu = "======USER MENU======\n1. View Today's summary\n2. Generate Graphs\n3. Compare your performace with peers in your area?\n4. Close the Application\n"
-        print mainMenu
-        print "Enter your choice: "
-        mainMenuChoice = int(input())
-        #mainMenuChoice = 1
+        while(mainMenuChoice != 4):
+            mainMenu = "======USER MENU======\n1. View Today's summary\n2. Generate Graphs\n3. Compare your performace with peers in your area?\n4. Close the Application\n"
+            print mainMenu
+            print "Enter your choice: "
+            mainMenuChoice = int(input())
+            #mainMenuChoice = 1
 
-        if(mainMenuChoice == 1):
-            createJsonData(mainMenuChoice, 0, clientId, 0)
+            if(mainMenuChoice == 1):
+                createJsonData(mainMenuChoice, 0, clientId, 0)
 
-        elif(mainMenuChoice == 2):
-            graphMenu = "\n======GRAPH MENU======\n1. Distance\n2. Elevation\n3. Calories\n4. Pulse\n5. Floors\n6. Blood Pressure\n7. Steps\n"
-            print graphMenu
-            print "Which graph do you want to generate?: "
-            graphMenuChoice = int(input())
+            elif(mainMenuChoice == 2):
+                graphMenu = "\n======GRAPH MENU======\n1. Distance\n2. Elevation\n3. Calories\n4. Pulse\n5. Floors\n6. Blood Pressure\n7. Steps\n"
+                print graphMenu
+                print "Which graph do you want to generate?: "
+                graphMenuChoice = int(input())
 
-            durationMenu = "\n======DURATION MENU======\n1. Stats for the Day\n2. Stats for the Week\n3. Stats for the Year\n"
-            print durationMenu
-            print "Please select the time-frame for graph: "
-            durationMenuChoice = int(input())
+                durationMenu = "\n======DURATION MENU======\n1. Stats for the Day\n2. Stats for the Week\n3. Stats for the Year\n"
+                print durationMenu
+                print "Please select the time-frame for graph: "
+                durationMenuChoice = int(input())
 
-            if((graphMenuChoice >= 1 and graphMenuChoice <=7) and (durationMenuChoice >=1 and durationMenuChoice <= 3)):
-                createJsonData(graphMenuChoice, durationMenuChoice, clientId, 0)
+                if((graphMenuChoice >= 1 and graphMenuChoice <=7) and (durationMenuChoice >=1 and durationMenuChoice <= 3)):
+                    createJsonData(graphMenuChoice, durationMenuChoice, clientId, 0)
+                else:
+                    print "Wrong Choice!"
+
+            elif(mainMenuChoice == 3):
+                #edgeIp = getEdgeIp(clientId)
+                edgeIp = "8.8.8.8"
+                createJsonData(mainMenuChoice, 4, clientId, edgeIp)
+
+            elif(mainMenuChoice == 4):
+                print "Goodbye!"
+                sys.exit("Client terminated the program")
+
             else:
                 print "Wrong Choice!"
-
-        elif(mainMenuChoice == 3):
-            #edgeIp = getEdgeIp(clientId)
-            edgeIp = "8.8.8.8"
-            createJsonData(mainMenuChoice, 4, clientId, edgeIp)
-
-        else:
-            print "Wrong Choice!"
 
     except:
 		comment = ('EXCEPTION: ' + str(sys.exc_info()[1]))
@@ -109,8 +115,8 @@ def createJsonData(graphMenuChoice, durationMenuChoice, clientId, edgeIp):
     jsonData = json.dumps(data)
     print jsonData
 
-    #url = 'http://localhost:5000/post'
-    url = 'http://34.223.200.168/getreport'
+    url = 'http://localhost:5000/post'
+    #url = 'http://34.223.200.168/getreport'
 
     start = timeit.default_timer()
     response = requests.post(url, data=jsonData, headers={"Content-Type":"application/json"},timeout = 10)

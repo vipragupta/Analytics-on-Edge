@@ -1,0 +1,98 @@
+
+		<!DOCTYPE html>
+		<html>
+            <!-- Resources -->
+            <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+            <script src="https://www.amcharts.com/lib/3/serial.js"></script>
+            <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+            <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+            <script src="https://www.amcharts.com/lib/3/themes/none.js"></script>
+            <link href="https://fonts.googleapis.com/css?family=Lato:300" rel="stylesheet">
+            <script src="https://www.amcharts.com/lib/3/pie.js"></script>
+            <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+            <link rel="stylesheet" href="style.css" type="text/css"/>
+        
+    <!-- Chart code -->
+    <script>
+    var chart = AmCharts.makeChart("chartdiv", {
+        "theme": "light",
+        "type": "serial",
+        "dataProvider": [{
+            "Activities": "Distance Covered",
+            "LocalAreaSummary": 3.4,
+            "ClientSummary": 3.4
+        }, {
+            "Activities": "Elevation",
+            "LocalAreaSummary": 2.1,
+            "ClientSummary": 2.1
+        }, {
+            "Activities": "Active Minutes",
+            "LocalAreaSummary": 23.0,
+            "ClientSummary": 23.0
+        }, {
+            "Activities": "Calories Burned",
+            "LocalAreaSummary": 143.0,
+            "ClientSummary": 151.0
+        }, {
+            "Activities": "Steps",
+            "LocalAreaSummary": 123,
+            "ClientSummary": 126
+        }, {
+            "Activities": "Number of floors",
+            "LocalAreaSummary": 1.3,
+            "ClientSummary": 1.3
+        }, {
+            "Activities": "Pulse",
+            "LocalAreaSummary": 98,
+            "ClientSummary": 98
+        }, {
+            "Activities": "Blood Pressure",
+            "LocalAreaSummary": 1.576923076,
+            "ClientSummary": 2
+        }],
+        "valueAxes": [{
+            "position": "left",
+            "title": "Count",
+        }],
+        "startDuration": 1,
+        "graphs": [{
+            "balloonText": "Area Summary - [[category]]: <b>[[value]]</b>",
+            "fillAlphas": 0.9,
+            "lineAlpha": 0.2,
+            "title": "LocalAreaSummary",
+            "type": "column",
+            "valueField": "LocalAreaSummary"
+        }, {
+            "balloonText": "My Summary - [[category]]: <b>[[value]]</b>",
+            "fillAlphas": 0.9,
+            "lineAlpha": 0.2,
+            "title": "ClientSummary",
+            "type": "column",
+            "clustered":false,
+            "columnWidth":0.5,
+            "valueField": "ClientSummary"
+        }],
+        "plotAreaFillAlphas": 0.1,
+        "categoryField": "Activities",
+        "categoryAxis": {
+            "gridPosition": "start"
+        },
+        "export": {
+        	"enabled": true
+         }
+
+    });
+    </script>
+    
+        <head>
+			<title>Report</title>
+		</head>
+        
+		<body class="main">
+		<header>
+			<h1 class="heading">Comparison of your performace with other Fitbit users in your area. Date: 2017-04-25</h1>
+		</header>
+		<div id="chartdiv"></div>
+        </body>
+        </html>
+		
