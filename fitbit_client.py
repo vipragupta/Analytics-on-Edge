@@ -8,20 +8,19 @@ import sys
 
 class MyData():
 	def __init__(self, index):
-
-		self.clientId = self.getClientID(index)
-		self.clientId = str(randint(0,9)) + str(randint(0,9)) + str(randint(0,9)) + str(randint(0,9)) + str(randint(0,9))+ str(randint(0,9))+ str(randint(0,9)) + str(randint(0,9))+ str(randint(0,9))+ str(randint(0,9))
+		self.clientId = str(self.getClientID(int(index)))
 		self.lat = getCurrentLat()						
 		self.long = getCurrentLong()
-		self.edgemap = {"8.8.8.8", "www.facebook.com", "www.youtube.com"}
+		self.edgemap = {"128.138.201.67", "10.0.0.237"}
 
 
 	def getClientID(self, index):
 		i = 0
-		with open("clientIds.txt") as id:
-			if i == index:
-				return id
-			i +=1
+		with open("clientIds.txt") as file:
+			for id in file:
+				if i == index:
+					return id.strip()
+				i +=1
 
 
 def serverInteraction(map):
@@ -32,8 +31,8 @@ def serverInteraction(map):
 			if len(map) != 0:
 				jsonData = json.dumps(map)
 				print "JSON DATA: ",jsonData
-				#
-				url = 'http://52.38.209.208/pushSecondsData'
+				#edge-server: 52.38.209.208
+				url = 'http://'+ map["ip"] + ":5000/pushSecondsData"
 				response = requests.post(url, data=jsonData, headers={"Content-Type":"application/json"})
 				#response = response
 
@@ -50,17 +49,18 @@ def serverInteraction(map):
 		print "Error in sendData", str(e)
 
 
-def sendData(time, data, clientId):
+def sendData(time, data, clientId, ip):
 	try:
 		map = {}
 		map["clientId"] = clientId
 		map["data"] = data
 		map["time"] = time
+		map["ip"] = ip
 		print
 		serverInteraction(map)
 			
 	except Exception as e:
-		print "Error in sendData", str(e)
+		print "Error in sendData: ", str(e)
 
 
 def getCurrentLat():			# got from GPS
@@ -98,14 +98,13 @@ def getIp(ipMap):
 
 if __name__ == '__main__':
 	i = 0
-	me = MyData(str(sys.argv[0]))
-	#ip = getIp(me.edgemap)
+	me = MyData(str(sys.argv[1]))
+	ip = "10.0.0.237"	#getIp(me.edgemap)
 	#print ip
 
 	dataList = []
 	fileIndex = str(randint(10,30))
 	filename = "/home/vipra/ProjectReport2/dataset/" + fileIndex + "_dataset.txt";
-	print filename
 	file = open(filename, 'r')
 	
 	for line in file:
@@ -116,7 +115,7 @@ if __name__ == '__main__':
 	while True:
 		now = datetime.datetime.now()
 		try:
-			sendData(str(now), dataList[i], me.clientId)
+			sendData(str(now), dataList[i], me.clientId, ip)
 		except Exception as e:
 			print "Retrying..."
 

@@ -262,6 +262,7 @@ def extractData():
 
 
 def checkSendDataToCloud():
+	return True
 	now = datetime.now()
 	datetm = datetime.strptime(str(now), "%Y-%m-%d %H:%M:%S.%f")
 	if datetm.minute == 00 or datetm.minute == 30:		#Reset all data at 00:05
@@ -273,7 +274,7 @@ def checkSendDataToCloud():
 def cloudServerInteraction(map):
 	response = ""
 	i = 0
-	while i < 1:
+	while i < 5:
 		if len(map) != 0:
 			jsonData = json.dumps(map)
 			print "CLOUD DATA: ",jsonData
