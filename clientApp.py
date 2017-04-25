@@ -22,7 +22,7 @@ import timeit
 graphMenuDict = {1:"distance", 2:"elevation", 3:"calories", 4:"pulse", 5:"floors", 6:"bp", 7:"steps"}
 durationMenuDict = {0:"dailyall",1:"daily", 2:"weekly", 3:"yearly",4:"localAreaSummary"}
 todayDate = str(datetime.datetime.now().date())
-l = []
+#l = []
 
 
 #-----------------------------GET NEAREST EDGE IP-------------------------------
@@ -115,14 +115,14 @@ def createJsonData(graphMenuChoice, durationMenuChoice, clientId, edgeIp):
     jsonData = json.dumps(data)
     print jsonData
 
-    url = 'http://localhost:5000/post'
-    #url = 'http://34.223.200.168/getreport'
+    #url = 'http://localhost:5000/post'
+    url = 'http://34.223.200.168/getreport'
 
-    start = timeit.default_timer()
+    #start = timeit.default_timer()
     response = requests.post(url, data=jsonData, headers={"Content-Type":"application/json"},timeout = 10)
-    end = timeit.default_timer()
+    #end = timeit.default_timer()
 
-    l.append(end-start)
+    #l.append(end-start)
 
     print response.json()
 
