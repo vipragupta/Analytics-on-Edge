@@ -16,6 +16,7 @@ import requests
 import json
 import datetime
 from generateReports import *
+import timeit
 
 
 graphMenuDict = {1:"distance", 2:"elevation", 3:"calories", 4:"pulse", 5:"floors", 6:"bp", 7:"steps"}
@@ -76,12 +77,10 @@ def createJsonData(graphMenuChoice, durationMenuChoice, clientId, edgeIp):
     jsonData = json.dumps(data)
     print jsonData
 
-    url = 'http://localhost:5000/post'
-    #url = 'http://34.223.200.168/getreport'
+    #url = 'http://localhost:5000/post'
+    url = 'http://34.223.200.168/getreport'
     response = requests.post(url, data=jsonData, headers={"Content-Type":"application/json"},timeout = 10)
-    print "#########################"
-##    response = response.json()
-##    print response['client_summary'].get('distance')
+    print response.json()
 
     if "200" in str(response):
         response = response.json()
@@ -89,9 +88,23 @@ def createJsonData(graphMenuChoice, durationMenuChoice, clientId, edgeIp):
 
     else:
         print str(response)
-        print "Bye-Bye"
+        print "Exiting the application!"
+
+def enterClientId():
+    clientId = str(raw_input("Please enter your ID: "))
+    f = open('clientIds.txt', 'r')
+    for eachline in f.readlines():
+        if(clientId == eachline.strip()):
+            print "Client ID " + clientId + " exists"
+            return clientId
+
+    print "Invalid Client ID! Please enter a valid ID!"
+    return (None)
 
 #------------------------------------MAIN---------------------------------------
 if __name__ == '__main__':
-    clientId = str(raw_input("Please enter your ID: "))
-    userMenu(clientId)
+    clientId = None
+    while(clientId == None):
+        clientId = enterClientId()
+
+    #userMenu(clientId)

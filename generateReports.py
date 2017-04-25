@@ -24,7 +24,7 @@ colors = ["#FF0F00","#FF6600","#FF9E01","#FCD202","#F8FF01","#B0DE09","#04D215",
 def displayGraph(data,result):
     try:
         global html
-        print "RESULT in displayGraph():", result
+        #print "RESULT in displayGraph():", result
 
         #Create the HTML file for output
         htmlReportPath = os.path.dirname(os.path.realpath(__file__))
@@ -70,7 +70,6 @@ def displayGraph(data,result):
                         for i in temp:
                             keys.append(str(i))
                         keys.sort()
-                        print keys
                     weekday = {}
                     for each_date in keys:
                         datee = dparser.parse(each_date,fuzzy=True)
